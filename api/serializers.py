@@ -9,10 +9,3 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 #for sign up page
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['name', 'email', 'password']
-        extra_kwargs = {
-            'password': {'write_only': True}  # Ensure password is not exposed
-        }

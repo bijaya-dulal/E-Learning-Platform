@@ -12,6 +12,7 @@ import CourseDetail from './components/CourseDetail';
 import Payment from './components/Payment';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import OtpConfirmation from './pages/OtpConfirmation.jsx';
+import ItemList from './pages/ItemList';
 
 
 
@@ -23,6 +24,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -32,6 +34,7 @@ const App = () => {
         <Route path="/payment/:id" element={<Payment />} />
         <Route path="/StudentDashboard" element={<StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
+        <Route path="itemlist" element={<ItemList />} />
       </Routes>
   
       
