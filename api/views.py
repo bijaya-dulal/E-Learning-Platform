@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .serializers import ItemSerializer, UserSerializer
 from .models import Item
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password  
 
 
 
@@ -16,6 +17,16 @@ class ItemListCreateView(generics.ListCreateAPIView):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        # Hash the password before saving
+        validated_data = serializer.validated_data
+        password = validated_data.get('password')
+        hashed_password = make_password(password)
+        validated_data['password'] = hashed_password
+        
+        # Save the user
+        serializer.save()
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):

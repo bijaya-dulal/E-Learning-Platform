@@ -9,8 +9,16 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 #for signin
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'password', 'email']  # Include 'password' field here
 
+    def create(self, validated_data):
+        # Ensure password is hashed before saving
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)  # This automatically hashes the password
+        user.save()
+        return user
