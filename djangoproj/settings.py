@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
      'corsheaders',
      
+     
 
 ]
 
@@ -147,3 +148,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+
+# Custom user model
+AUTH_USER_MODEL = 'auth.User'

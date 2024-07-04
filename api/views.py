@@ -1,24 +1,31 @@
-from rest_framework import generics
-from .models import Item,User
-from .serializers import ItemSerializer ,UserSerializer
-from django.contrib.auth.hashers import make_password
-from rest_framework import status
+from rest_framework import generics, permissions
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import ItemSerializer, UserSerializer
+from .models import Item
+from django.contrib.auth.models import User
+
+
 
 class ItemListCreateView(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
-#for sign up 
-class UserCreateView(generics.CreateAPIView):
+class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def perform_create(self, serializer):
-        password = serializer.validated_data.get('password')
-        serializer.save(password=make_password(password))
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        token = Token.objects.create(user=response.user)
+        return Response({'token': token.key})
 
+class LogoutView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def perform_create(self, serializer):
-        password = serializer.validated_data.get('password')
-        serializer.save(password=make_password(password))
-    
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response(status=204)
