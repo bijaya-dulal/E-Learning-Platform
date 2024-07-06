@@ -62,14 +62,29 @@
 //updated form
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api/api'; // Import Axios instance
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate(); // For navigation after login
 
-  const onSubmit = data => {
-    console.log(data);
-    // handle login logic here
+  const onSubmit = async data => {
+    try {
+      const response = await api.post('/auth/token/', {
+        username: data.email, // Adjust if using `username` instead of `email`
+        password: data.password
+      });
+
+      // Store the token in local storage or a context
+      localStorage.setItem('token', response.data.token);
+
+      // Redirect to a protected page or update UI
+      navigate('/dashboard'); // Adjust the route as needed
+    } catch (error) {
+      console.error('Login error', error);
+      alert('Invalid email or password');
+    }
   };
 
   return (
@@ -120,3 +135,4 @@ function Login() {
 }
 
 export default Login;
+

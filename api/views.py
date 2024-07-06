@@ -14,6 +14,8 @@ class ItemListCreateView(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+
+#for sign up
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -28,11 +30,20 @@ class RegisterView(generics.CreateAPIView):
         # Save the user
         serializer.save()
 
+# class CustomAuthToken(ObtainAuthToken):
+#     def post(self, request, *args, **kwargs):
+#         response = super().post(request, *args, **kwargs)
+#         token = Token.objects.create(user=response.user)
+#         user = response.data['user']  #added
+#         return Response({'token': token.key})
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        token = Token.objects.create(user=response.user)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
+
 
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
