@@ -24,20 +24,32 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 		model = UserModel
 		fields = '__all__'
 	def create(self, clean_data):
-		user_obj = UserModel.objects.create_user(email=clean_data['email'], password=clean_data['password'], username=clean_data['username'])
+		#change here for first name and second name
+		user_obj = UserModel.objects.create_user(email=clean_data['email'], password=clean_data['password'], username=clean_data['email'],first_name=clean_data['username'])
 		
 		user_obj.save()
 		return user_obj
 
+# class UserLoginSerializer(serializers.Serializer):
+# 	email = serializers.EmailField()
+# 	password = serializers.CharField()
+# 	##
+# 	def check_user(self, clean_data):
+# 		user = authenticate(username=clean_data['email'], password=clean_data['password'])
+# 		if not user:
+# 			raise serializers.ValidationError('user not found')
+# 		return user
+
 class UserLoginSerializer(serializers.Serializer):
-	email = serializers.EmailField()
-	password = serializers.CharField()
-	##
-	def check_user(self, clean_data):
-		user = authenticate(username=clean_data['email'], password=clean_data['password'])
-		if not user:
-			raise serializers.ValidationError('user not found')
-		return user
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, data):
+        user = authenticate(username=data['username'], password=data['password'])
+        if user and user.is_active:
+            return data
+        raise serializers.ValidationError("Invalid username or password")
+
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
