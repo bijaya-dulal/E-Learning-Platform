@@ -63,7 +63,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../api/api'; // Import Axios instance
+import { login } from '../api/api'; // Import login method
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -71,11 +71,7 @@ function Login() {
 
   const onSubmit = async data => {
     try {
-      const response = await api.post('/auth/token/', {
-        username: data.email, // Adjust if using `username` instead of `email`
-        password: data.password
-      });
-
+      const response = await login(data.email, data.password);
       // Store the token in local storage or a context
       localStorage.setItem('token', response.data.token);
 
@@ -135,4 +131,3 @@ function Login() {
 }
 
 export default Login;
-

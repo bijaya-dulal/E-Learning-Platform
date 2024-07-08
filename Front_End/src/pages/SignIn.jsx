@@ -117,43 +117,34 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { login, register } from '../api/api';
+import api from '../api/api';
 
 const SignIn = () => {
-  const {
-    register: formRegister,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register: formRegister, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = async (data, role) => {
-    console.log(JSON.stringify(data, null, 2));
-
     try {
-      if (role === 'student' || role === 'teacher') {
-        await register(data.name, data.email, data.password);
-        console.log(`Signed in as ${role}`);
-      } else {
-        await login(data.email, data.password);
-      }
+      const response = await api.post('/register/', {
+        username: data.name,
+        email: data.email,
+        password: data.password
+      });
+      console.log('User registered:', response.data);
       navigate('/otp-confirmation');
     } catch (error) {
       console.error('Authentication error:', error);
-      // Handle error (e.g., show error message)
+      alert('Error registering user');
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <form className="bg-white p-6 rounded shadow-md">
+      <form className="bg-white p-6 rounded shadow-md" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="text-2xl font-bold mb-6">Register</h2>
 
         <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700">
-            Name
-          </label>
+          <label htmlFor="name" className="block text-gray-700">Name</label>
           <input
             id="name"
             name="name"
@@ -165,9 +156,7 @@ const SignIn = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700">
-            Email
-          </label>
+          <label htmlFor="email" className="block text-gray-700">Email</label>
           <input
             id="email"
             name="email"
@@ -179,9 +168,7 @@ const SignIn = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700">
-            Password
-          </label>
+          <label htmlFor="password" className="block text-gray-700">Password</label>
           <input
             id="password"
             name="password"
@@ -193,9 +180,7 @@ const SignIn = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block text-gray-700">
-            Confirm Password
-          </label>
+          <label htmlFor="confirmPassword" className="block text-gray-700">Confirm Password</label>
           <input
             id="confirmPassword"
             name="confirmPassword"
@@ -235,3 +220,4 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
