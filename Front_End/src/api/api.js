@@ -12,7 +12,7 @@ const api = axios.create({
 
 // Function to register a new user  and login
 export const login = (email, password) => {
-  return api.post('login/', { username: email, password: password });
+  return api.post('login/', { username:username, password: password });
 };
 
 export const register = (email, password, username) => {

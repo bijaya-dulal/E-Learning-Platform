@@ -64,14 +64,20 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/api'; // Import login method
+import api from '../api/api';
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate(); // For navigation after login
 
-  const onSubmit = async data => {
+ 
+const onSubmit = async (data, role) => {
     try {
-      const response = await login(data.email, data.password);
+      const response = await api.post('/login/', {
+        
+        username: data.email,
+        password: data.password
+      });  
       // Store the token in local storage or a context
       localStorage.setItem('token', response.data.token);
 
