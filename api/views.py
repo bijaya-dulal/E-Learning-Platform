@@ -36,6 +36,9 @@ class RegisterView(generics.CreateAPIView):
 #         token = Token.objects.create(user=response.user)
 #         user = response.data['user']  #added
 #         return Response({'token': token.key})
+
+#for login
+
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -43,6 +46,7 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
+
 
 
 class LogoutView(APIView):

@@ -21,7 +21,7 @@ export const register = (username, email, password) => {
 
 // Function to log in a user
 export const login = (email, password) => {
-  return api.post('auth/token/', {
+  return api.post('/token/', {
     username: email, // Assuming username is used for authentication
     password
   });
