@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaBook, FaChalkboardTeacher, FaUser, FaClipboardList, FaRegCalendarAlt } from 'react-icons/fa';
 
+
 const courses = [
   {
     id: 1,
