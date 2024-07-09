@@ -1,6 +1,12 @@
 from django.urls import path
 from . import views
 from rest_framework.authtoken.views import obtain_auth_token
+from .views import CourseViewSet, EnrollmentViewSet
+
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register(r'courses', CourseViewSet)
+router.register(r'enrollments', EnrollmentViewSet)
 urlpatterns = [
     path('items/',views.ItemListCreateView.as_view(), name='item-list-create'),
   	path('register/', views.UserRegister.as_view(), name='register'),
