@@ -140,9 +140,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # for react
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5175',
+    'http://localhost:5173',
      'http://localhost:3000',
 
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+       'http://localhost:5174',
+          'http://localhost:5175',  # Your frontend URL
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -156,3 +162,7 @@ REST_FRAMEWORK = {
 
 # Custom user model
 AUTH_USER_MODEL = 'auth.User'
+
+#for session
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"

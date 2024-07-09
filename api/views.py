@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, login
 
 
 
-
 class ItemListCreateView(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -33,7 +32,7 @@ class UserRegister(APIView):
 
 
 class UserLogin(APIView):
-#     permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = UserLoginSerializer(data=request.data)
@@ -42,30 +41,40 @@ class UserLogin(APIView):
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
             )
+            print(f"Authenticated User: {user}")
+            
             if user is not None:
                 login(request, user)
+                print(f"Session Key: {request.session.session_key}")
                 return Response({
                     'username': user.first_name,
                     'email': user.email,
-                   # Include token if using token authentication
+                    'session_id': request.session.session_key,
                 }, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class UserLogout(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
 	def post(self, request):
 		logout(request)
-		print("logout")
+		print('logout')  
+   
 		return Response(status=status.HTTP_200_OK)
+	    
 
 
 class UserView(APIView):
 	permission_classes = (permissions.IsAuthenticated,)
+
 	authentication_classes = (SessionAuthentication,)
 	##
 	def get(self, request):
 		serializer = UserSerializer(request.user)
 		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+	
+
+
+
+

@@ -43,7 +43,8 @@ class UserLoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid username or password")
 
 
+
 class UserSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = UserModel
-		fields = ('email', 'username')
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']

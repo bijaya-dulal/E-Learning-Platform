@@ -18,5 +18,23 @@ export const login = (email, password) => {
 export const register = (email, password, username) => {
   return api.post('register/', { email: email, password: password, username: username });
 };
+ 
+export const getUser = async () => {
+  try {
+    const response = await api.get('/api/user/');
+    return response.data; // Assuming your API returns user data as JSON
+  } catch (error) {
+    throw error; // Handle errors in your component
+  }
+};
+
+//
+// api.interceptors.request.use(config => {
+//   const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+//   if (token) {
+//     config.headers['X-CSRFToken'] = token;
+//   }
+//   return config;
+// });
 
 export default api;
