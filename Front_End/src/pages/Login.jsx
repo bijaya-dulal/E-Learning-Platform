@@ -3,8 +3,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/api'; // Import login method
-import api from '../api/api';
+import api from '../api/axios';
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -20,7 +19,7 @@ const onSubmit = async (data, role) => {
       });  
       // Store the token in local storage or a context
       sessionStorage.setItem('session_id', response.data.session_id);
-
+      
       // Redirect to a protected page or update UI
       navigate('/StudentDashboard/'); // Adjust the route as needed
     } catch (error) {

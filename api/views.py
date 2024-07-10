@@ -35,6 +35,60 @@ class UserRegister(APIView):
 		return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class UserLogout(APIView):
+	permission_classes = (permissions.AllowAny,)
+	
+	def post(self, request):
+		logout(request)
+		print('logout')  
+   
+		return Response(status=status.HTTP_200_OK)
+
+
+class UserView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,)
+
+    def get(self, request):
+        print('request received')
+        
+        serializer = UserSerializer(request.user)
+        print(request.user)
+        return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+     
+	    
+
+
+
+
+
+
+
+# views.py
+
+from rest_framework import viewsets
+
+from rest_framework.decorators import action
+from .models import Course, Enrollment
+from .serializers import CourseSerializer, EnrollmentSerializer
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    queryset = Enrollment.objects.all()
+    serializer_class = EnrollmentSerializer
+
+    # @action(detail=True, methods=['post'])
+    def enroll(self, request, pk=None):
+        course = self.get_object()
+        # Perform enrollment logic here (e.g., create Enrollment record)
+        enrollment = Enrollment.objects.create(course=course)
+        return Response({'message': 'Enrolled successfully'})
+
+#####this is for login
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -59,63 +113,3 @@ class UserLogin(APIView):
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class UserLogout(APIView):
-	permission_classes = (permissions.AllowAny,)
-	authentication_classes = ()
-	def post(self, request):
-		logout(request)
-		print('logout')  
-   
-		return Response(status=status.HTTP_200_OK)
-	    
-
-
-class UserView(APIView):
-	permission_classes = (permissions.IsAuthenticated,)
-
-	authentication_classes = (SessionAuthentication,)
-	
-	def get(self, request):
-		serializer = UserSerializer(request.user)
-		return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-	
-
-# class UserView(LoginRequiredMixin, View):
-#     def get(self, request, *args, **kwargs):
-#         print('here')
-#         if request.user.is_authenticated:
-#             print('here')
-#             return JsonResponse({
-#                 'username': request.user.username,
-#                 'email': request.user.email,
-#                 # Add more user profile details as needed
-#             })
-#         else:
-#             return JsonResponse({'error': 'User not authenticated'}, status=401)
-
-
-
-
-# views.py
-
-from rest_framework import viewsets
-
-from rest_framework.decorators import action
-from .models import Course, Enrollment
-from .serializers import CourseSerializer, EnrollmentSerializer
-
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-
-class EnrollmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrollment.objects.all()
-    serializer_class = EnrollmentSerializer
-
-    @action(detail=True, methods=['post'])
-    def enroll(self, request, pk=None):
-        course = self.get_object()
-        # Perform enrollment logic here (e.g., create Enrollment record)
-        enrollment = Enrollment.objects.create(course=course)
-        return Response({'message': 'Enrolled successfully'})

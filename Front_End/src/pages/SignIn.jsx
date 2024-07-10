@@ -2,7 +2,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api/api';
+import api from '../api/axios';
 
 const SignIn = () => {
   const { register: formRegister, handleSubmit, watch, formState: { errors } } = useForm();

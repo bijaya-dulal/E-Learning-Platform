@@ -2,7 +2,7 @@
 // // update
 import React, { useEffect, useState } from 'react';
 import { FaBook, FaChalkboardTeacher, FaUser, FaClipboardList, FaRegCalendarAlt } from 'react-icons/fa';
-import api from '../api/api'; // Assuming you have an API utility to make requests
+import api from '../api/axios'; // Assuming you have an API utility to make requests
 
 const courses = [
   {
@@ -39,14 +39,23 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     // Fetch user details from API
+    
     const fetchUserDetails = async () => {
       try {
-        const response = await api.get('/user/');
-        setUser(response.data);
+        const sessionId = sessionStorage.getItem('session_id'); // Retrieve session ID from storage
+        const response = await api.get('/user/', {
+          headers: {
+            'Authorization': `Session ${sessionId}`, // Pass session ID in headers or as needed
+          },
+        });
+        console.log(response.data)
+        setUser(response.data.user);
+        console.log(user.username +' is logged in')
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
     };
+
 
     fetchUserDetails();
   }, []);
@@ -61,7 +70,7 @@ const StudentDashboard = () => {
           <div className="flex items-center mb-4">
             <FaUser className="text-4xl text-teal-500 mr-4" />
             <div>
-              <h2 className="text-2xl font-bold">{user ? user.username : 'Loading...'}</h2>
+              <h2 className="text-2xl font-bold">{user ? user.first_name : 'Loading...'}</h2>
               <p className="text-gray-500">Student</p>
             </div>
           </div>
