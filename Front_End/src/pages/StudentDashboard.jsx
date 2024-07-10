@@ -1,7 +1,6 @@
-
-// // update
 import React, { useEffect, useState } from 'react';
 import { FaBook, FaChalkboardTeacher, FaUser, FaClipboardList, FaRegCalendarAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios'; // Assuming you have an API utility to make requests
 
 const courses = [
@@ -36,10 +35,10 @@ const recentActivities = [
 
 const StudentDashboard = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch user details from API
-    
     const fetchUserDetails = async () => {
       try {
         const sessionId = sessionStorage.getItem('session_id'); // Retrieve session ID from storage
@@ -48,21 +47,41 @@ const StudentDashboard = () => {
             'Authorization': `Session ${sessionId}`, // Pass session ID in headers or as needed
           },
         });
-        console.log(response.data)
         setUser(response.data.user);
-        console.log(user.username +' is logged in')
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
     };
 
-
     fetchUserDetails();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      const sessionId = sessionStorage.getItem('session_id');
+      await api.post('/logout/', {}, {
+        headers: {
+          'Authorization': `Session ${sessionId}`,
+        },
+      });
+      sessionStorage.removeItem('session_id'); // Clear session ID from storage
+      navigate('/signin'); // Redirect to sign-in page
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Student Dashboard</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Student Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Profile Information */}
@@ -149,5 +168,3 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
-
-

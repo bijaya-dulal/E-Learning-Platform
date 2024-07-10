@@ -18,7 +18,8 @@ const onSubmit = async (data, role) => {
         password: data.password
       });  
       // Store the token in local storage or a context
-      sessionStorage.setItem('session_id', response.data.session_id);
+      localStorage.setItem('session_id', response.data.session_id);
+    
       
       // Redirect to a protected page or update UI
       navigate('/StudentDashboard/'); // Adjust the route as needed
