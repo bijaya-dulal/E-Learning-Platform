@@ -64,6 +64,7 @@ const StudentDashboard = () => {
           'Authorization': `Session ${sessionId}`,
         },
       });
+      localStorage.removeItem('session-id');
       sessionStorage.removeItem('session_id'); // Clear session ID from storage
       navigate('/signin'); // Redirect to sign-in page
     } catch (error) {
