@@ -171,9 +171,10 @@
 // export default Courses;
 
 
+//update here
 import React, { useState, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer.jsx';
 
 const categories = [
@@ -200,7 +201,7 @@ const courses = [
     hours: 190,
     price: 100,
     monthlyPrice: 15,
-    video: 'intro_to_ux_design.mp4', // Example video file name
+    videoLink: '/media/videos/ux-design-intro.mp4',
   },
   {
     id: 2,
@@ -211,9 +212,68 @@ const courses = [
     hours: 160,
     price: 120,
     monthlyPrice: 20,
-    video: 'advanced_ui_techniques.mp4', // Example video file name
   },
-  // Add more courses with video file names as needed
+  {
+    id: 3,
+    category: 1, // UI/UX Design Courses
+    title: 'Wireframing and Prototyping',
+    instructor: 'Alice Johnson',
+    lectures: 30,
+    hours: 100,
+    price: 80,
+    monthlyPrice: 12,
+  },
+  {
+    id: 4,
+    category: 3, // Computer Science
+    title: 'Introducing to Programming with WordPress',
+    instructor: 'John Smith',
+    lectures: 50,
+    hours: 190,
+    price: 100,
+    monthlyPrice: 15,
+  },
+  {
+    id: 5,
+    category: 3, // Computer Science
+    title: 'Introducing to Programming with WordPress',
+    instructor: 'John Smith',
+    lectures: 50,
+    hours: 190,
+    price: 100,
+    monthlyPrice: 15,
+  },
+  {
+    id: 6,
+    category: 3, // Computer Science
+    title: 'Introducing to Programming with WordPress',
+    instructor: 'John Smith',
+    lectures: 50,
+    hours: 190,
+    price: 100,
+    monthlyPrice: 15,
+  },
+  {
+    id: 7,
+    category: 3, // Computer Science
+    title: 'Introducing to Programming with WordPress',
+    instructor: 'John Smith',
+    lectures: 50,
+    hours: 190,
+    price: 100,
+    monthlyPrice: 15,
+  },
+  {
+    id: 8,
+    category: 3, // Computer Science
+    title: 'Introducing to Programming with WordPress',
+    instructor: 'John Smith',
+    lectures: 50,
+    hours: 190,
+    price: 100,
+    monthlyPrice: 15,
+  },
+  // Add more courses as needed with appropriate category IDs
 ];
 
 const Courses = () => {
@@ -226,31 +286,15 @@ const Courses = () => {
     coursesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleEnrollClick = async (id) => {
-    try {
-      // Replace with your actual backend API endpoint for enrolling in the course
-      const response = await fetch(`http://localhost:8000/api/enroll/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any necessary headers like authentication tokens or session keys
-        },
-        // You can pass additional data if needed in the body
-        body: JSON.stringify({ courseId: id }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to enroll in the course');
-      }
-      
-      // Upon successful enrollment, navigate to the course page or handle video access
-      navigate(`/course/${id}`);
-      
-    } catch (error) {
-      console.error('Error enrolling in course:', error);
-      // Handle error (e.g., show a message to the user)
-    }
+  // const handleEnrollClick = (id) => {
+  //   navigate(`/course/${id}`);
+  //   setSelectedCourse(id);
+  // };
+  //updated function
+  const handleEnrollClick = (id) => {
+    navigate(`/course/${id}`);
   };
+  
 
   const filteredCourses = selectedCategory 
     ? courses.filter(course => course.category === selectedCategory) 
@@ -275,7 +319,6 @@ const Courses = () => {
             </button>
           ))}
         </div>
-        
         <h2 ref={coursesRef} className="text-3xl font-bold mb-8">Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
@@ -295,22 +338,7 @@ const Courses = () => {
               <p className="text-gray-500 mb-4">by {course.instructor}</p>
               <p className="text-gray-500 mb-4">{course.lectures} lectures ({course.hours} hrs)</p>
               <p className="text-teal-500 mb-4">${course.price} All Course / ${course.monthlyPrice} per month</p>
-              
-              {/* Enroll button triggers handleEnrollClick */}
-              <button
-                onClick={() => handleEnrollClick(course.id)}
-                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
-              >
-                ENROLL NOW!
-              </button>
-              
-              {/* Video playback */}
-              <div className="mt-4">
-                <video width="100%" controls>
-                  <source src={`http://localhost:8000/media/videos/${course.video}`} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
+              <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
             </div>
           ))}
         </div>
