@@ -201,7 +201,7 @@ const courses = [
     hours: 190,
     price: 100,
     monthlyPrice: 15,
-    videoLink: '/media/videos/ux-design-intro.mp4',
+    videoLink: '/videos/ux-design-intro.mp4',
   },
   {
     id: 2,

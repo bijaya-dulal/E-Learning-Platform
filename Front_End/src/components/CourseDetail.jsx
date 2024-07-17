@@ -10,7 +10,7 @@ const courseData = {
       {
         sectionTitle: 'Lessons With Video Content',
         lessons: [
-          { title: 'Introduction', duration: '12:30', videoLink: 'path/to/intro-video.mp4', notesLink: 'path/to/intro-notes.pdf', free: true },
+          { title: 'Introduction', duration: '12:30', videoLink: '../media/videos/ux-design-intro.mp4', notesLink: 'path/to/intro-notes.pdf', free: true },
           { title: 'Getting Started', duration: '10:05', videoLink: 'path/to/started-video.mp4', notesLink: 'path/to/started-notes.pdf', free: false },
           { title: 'Advanced Topics', duration: '2:25', videoLink: 'path/to/advanced-video.mp4', notesLink: 'path/to/advanced-notes.pdf', free: false },
         ],
@@ -66,7 +66,7 @@ const CourseDetail = () => {
       <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
 
       <div className="mb-4">
-        <video controls src={selectedLesson.videoLink} className="w-full"></video>
+        <video controls src={'videos/course-video.mp4'} className="w-full"></video>
         <div className="mt-4">
           <a href={selectedLesson.notesLink} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
         </div>
