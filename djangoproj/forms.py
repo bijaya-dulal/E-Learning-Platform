@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from ..api import Course
+from api.models import Course
 
 class CourseForm(forms.ModelForm):
     class Meta:

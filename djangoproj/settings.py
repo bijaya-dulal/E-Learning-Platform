@@ -44,6 +44,7 @@ INSTALLED_APPS = [
      'corsheaders',
      
      
+     
 
 ]
 
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'djangoproj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'reactapp/build')],
+        'DIRS': [os.path.join(BASE_DIR,'reactapp/build','templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -169,4 +170,4 @@ CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 
 #for video
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'Front-End/public')
