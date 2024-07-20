@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import ItemSerializer
-from .models import Item
+from .models import Item, Course
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
@@ -57,37 +57,6 @@ class UserView(APIView):
         print(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
      
-	    
-
-
-
-
-
-
-
-# views.py
-
-from rest_framework import viewsets
-
-from rest_framework.decorators import action
-from .models import Course, Enrollment
-from .serializers import CourseSerializer, EnrollmentSerializer
-
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-
-class EnrollmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrollment.objects.all()
-    serializer_class = EnrollmentSerializer
-
-    # @action(detail=True, methods=['post'])
-    def enroll(self, request, pk=None):
-        course = self.get_object()
-        # Perform enrollment logic here (e.g., create Enrollment record)
-        enrollment = Enrollment.objects.create(course=course)
-        return Response({'message': 'Enrolled successfully'})
-
 #####this is for login
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -112,4 +81,39 @@ class UserLogin(APIView):
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+	    
+
+
+
+
+
+
+
+# views.py
+
+from rest_framework import viewsets
+
+from rest_framework.decorators import action
+from .models import Course, Enrollment
+from .serializers import CourseSerializer, EnrollmentSerializer
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    
+
+    
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    queryset = Enrollment.objects.all()
+    serializer_class = EnrollmentSerializer
+
+    #@action(detail=True, methods=['post'])
+    def enroll(self, request, pk=None):
+        course = self.get_object()
+        # Perform enrollment logic here (e.g., create Enrollment record)
+        enrollment = Enrollment.objects.create(course=course)
+        return Response({'message': 'Enrolled successfully'})
 

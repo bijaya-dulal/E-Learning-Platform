@@ -170,4 +170,4 @@ CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 
 #for video
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'Front-End/public')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -11,5 +11,5 @@ urlpatterns = [
      
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),  # Include the API app URLs
-    path('add_course/', views.add_course, name='add_course')
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
