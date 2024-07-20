@@ -1,3 +1,4 @@
+// //update here
 // import React, { useState, useRef } from 'react';
 // import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
 // import { Link,useNavigate } from 'react-router-dom';
@@ -27,6 +28,7 @@
 //     hours: 190,
 //     price: 100,
 //     monthlyPrice: 15,
+//     videoLink: 'videos/course-video.mp4',
 //   },
 //   {
 //     id: 2,
@@ -111,10 +113,12 @@
 //     coursesRef.current.scrollIntoView({ behavior: 'smooth' });
 //   };
 
+
+
 //   const handleEnrollClick = (id) => {
 //     navigate(`/course/${id}`);
-//     setSelectedCourse(id);
 //   };
+  
 
 //   const filteredCourses = selectedCategory 
 //     ? courses.filter(course => course.category === selectedCategory) 
@@ -170,11 +174,10 @@
 
 // export default Courses;
 
-
-//update here
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Footer from '../components/Footer.jsx';
 
 const categories = [
@@ -191,110 +194,37 @@ const categories = [
   { id: 11, name: 'Web Management', courses: 17, icon: <FaProjectDiagram className="text-4xl text-teal-500"/> },
 ];
 
-const courses = [
-  {
-    id: 1,
-    category: 1, // UI/UX Design Courses
-    title: 'Intro to UX Design',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-    videoLink: 'videos/course-video.mp4',
-  },
-  {
-    id: 2,
-    category: 1, // UI/UX Design Courses
-    title: 'Advanced UI Techniques',
-    instructor: 'Jane Doe',
-    lectures: 40,
-    hours: 160,
-    price: 120,
-    monthlyPrice: 20,
-  },
-  {
-    id: 3,
-    category: 1, // UI/UX Design Courses
-    title: 'Wireframing and Prototyping',
-    instructor: 'Alice Johnson',
-    lectures: 30,
-    hours: 100,
-    price: 80,
-    monthlyPrice: 12,
-  },
-  {
-    id: 4,
-    category: 3, // Computer Science
-    title: 'Introducing to Programming with WordPress',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-  },
-  {
-    id: 5,
-    category: 3, // Computer Science
-    title: 'Introducing to Programming with WordPress',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-  },
-  {
-    id: 6,
-    category: 3, // Computer Science
-    title: 'Introducing to Programming with WordPress',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-  },
-  {
-    id: 7,
-    category: 3, // Computer Science
-    title: 'Introducing to Programming with WordPress',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-  },
-  {
-    id: 8,
-    category: 3, // Computer Science
-    title: 'Introducing to Programming with WordPress',
-    instructor: 'John Smith',
-    lectures: 50,
-    hours: 190,
-    price: 100,
-    monthlyPrice: 15,
-  },
-  // Add more courses as needed with appropriate category IDs
-];
-
 const Courses = () => {
+  const [courses, setCourses] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const coursesRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('/api/courses/');
+        if (Array.isArray(response.data)) {
+          setCourses(response.data);
+        } else {
+          console.error('Unexpected response data format:', response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const handleCategoryClick = (id) => {
     setSelectedCategory(id);
     coursesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // const handleEnrollClick = (id) => {
-  //   navigate(`/course/${id}`);
-  //   setSelectedCourse(id);
-  // };
-  //updated function
   const handleEnrollClick = (id) => {
     navigate(`/course/${id}`);
   };
-  
 
   const filteredCourses = selectedCategory 
     ? courses.filter(course => course.category === selectedCategory) 
@@ -321,26 +251,30 @@ const Courses = () => {
         </div>
         <h2 ref={coursesRef} className="text-3xl font-bold mb-8">Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
-            <div key={course.id} className="border rounded-lg p-6 bg-white shadow-md">
-              <div className="flex justify-center mb-4">
-                <FaLaptopCode className="text-4xl text-teal-500" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-              <div className="flex items-center justify-center mb-2">
-                <div className="flex items-center">
-                  <div className="flex items-center justify-center text-teal-500 mr-2">
-                    ★★★★★
-                  </div>
-                  <span className="text-gray-500">(5.0)</span>
+          {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
+            filteredCourses.map((course) => (
+              <div key={course.id} className="border rounded-lg p-6 bg-white shadow-md">
+                <div className="flex justify-center mb-4">
+                  <FaLaptopCode className="text-4xl text-teal-500" />
                 </div>
+                <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
+                <div className="flex items-center justify-center mb-2">
+                  <div className="flex items-center">
+                    <div className="flex items-center justify-center text-teal-500 mr-2">
+                      ★★★★★
+                    </div>
+                    <span className="text-gray-500">(5.0)</span>
+                  </div>
+                </div>
+                <p className="text-gray-500 mb-4">by {course.instructor}</p>
+                <p className="text-gray-500 mb-4">{course.lectures} lectures ({course.hours} hrs)</p>
+                <p className="text-teal-500 mb-4">${course.price} All Course / ${course.monthlyPrice} per month</p>
+                <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
               </div>
-              <p className="text-gray-500 mb-4">by {course.instructor}</p>
-              <p className="text-gray-500 mb-4">{course.lectures} lectures ({course.hours} hrs)</p>
-              <p className="text-teal-500 mb-4">${course.price} All Course / ${course.monthlyPrice} per month</p>
-              <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No courses available.</p>
+          )}
         </div>
       </div>
       <Footer />

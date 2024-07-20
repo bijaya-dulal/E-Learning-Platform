@@ -103,7 +103,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     
-
+   # Custom action to get courses
+    def retrieve(self, request):
+        course = self.get_object()
+        serializer = CourseSerializer(course)
+        return Response(serializer.data)
     
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
