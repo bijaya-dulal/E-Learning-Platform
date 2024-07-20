@@ -173,7 +173,6 @@
 // };
 
 // export default Courses;
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -193,10 +192,15 @@ const categories = [
   { id: 10, name: 'Business Administration', courses: 17, icon: <FaBriefcase className="text-4xl text-teal-500"/> },
   { id: 11, name: 'Web Management', courses: 17, icon: <FaProjectDiagram className="text-4xl text-teal-500"/> },
 ];
-
+// to remove  extention of file
+const removeFileExtension = (filename) => {
+  return filename.replace(/\.[^/.]+$/, "");
+};
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const coursesRef = useRef(null);
   const navigate = useNavigate();
 
@@ -204,13 +208,18 @@ const Courses = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('/api/courses/');
+        console.log(response.data);
         if (Array.isArray(response.data)) {
           setCourses(response.data);
         } else {
           console.error('Unexpected response data format:', response.data);
+          setError('Unexpected data format');
         }
       } catch (error) {
         console.error('Error fetching courses:', error);
+        setError('Error fetching data');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -250,32 +259,38 @@ const Courses = () => {
           ))}
         </div>
         <h2 ref={coursesRef} className="text-3xl font-bold mb-8">Courses</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
-            filteredCourses.map((course) => (
-              <div key={course.id} className="border rounded-lg p-6 bg-white shadow-md">
-                <div className="flex justify-center mb-4">
-                  <FaLaptopCode className="text-4xl text-teal-500" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-                <div className="flex items-center justify-center mb-2">
-                  <div className="flex items-center">
-                    <div className="flex items-center justify-center text-teal-500 mr-2">
-                      ★★★★★
-                    </div>
-                    <span className="text-gray-500">(5.0)</span>
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCourses.length > 0 ? (
+              filteredCourses.map((course) => (
+                <div key={course.id} className="border rounded-lg p-6 bg-white shadow-md">
+                  <div className="flex justify-center mb-4">
+                    <FaLaptopCode className="text-4xl text-teal-500" />
                   </div>
+                  <h3 className="text-xl font-semibold mb-2">{removeFileExtension(course.title)}</h3>
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center text-teal-500 mr-2">
+                        ★★★★★
+                      </div>
+                      <span className="text-gray-500">(5.0)</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-500 mb-4">by {course.instructor}</p>
+                  <p className="text-gray-500 mb-4">{course.lectures} lectures ({course.hours} hrs)</p>
+                  <p className="text-teal-500 mb-4">${course.price} All Course / ${course.monthly_price} per month</p>
+                  <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
                 </div>
-                <p className="text-gray-500 mb-4">by {course.instructor}</p>
-                <p className="text-gray-500 mb-4">{course.lectures} lectures ({course.hours} hrs)</p>
-                <p className="text-teal-500 mb-4">${course.price} All Course / ${course.monthlyPrice} per month</p>
-                <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
-              </div>
-            ))
-          ) : (
-            <p>No courses available.</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p>No courses available.</p>
+            )}
+          </div>
+        )}
       </div>
       <Footer />
     </div>
