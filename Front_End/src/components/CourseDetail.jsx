@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
-
+import axios from 'axios'; 
 // Example course data
 const courseData = {
-  1: {
+  3: {
     title: 'The Ultimate Guide To The Best WordPress LMS Plugin',
     overview: 'LearnPress is a comprehensive WordPress LMS Plugin for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online.',
     curriculum: [
@@ -50,6 +50,41 @@ const CourseDetail = () => {
     setActiveTab(tab);
   };
 
+
+//update for the dynamic data loading
+// const CourseDetail = () => {
+//   const { id } = useParams();
+//   const [course, setCourse] = useState(null);
+//   const [activeTab, setActiveTab] = useState('overview');
+//   const [hasPaid, setHasPaid] = useState(false);
+//   const [selectedLesson, setSelectedLesson] = useState(null);
+//   const [newReview, setNewReview] = useState('');
+//   const [newRating, setNewRating] = useState(5);
+
+// useEffect(() => {
+//     const fetchCourse = async () => {
+//       try {
+//         const response = await axios.get(`/api/courses/${id}/`);
+//         setCourse(response.data);
+
+//         // Ensure the curriculum and lessons are available before setting the initial lesson
+//         if (response.data.curriculum && response.data.curriculum.length > 0 &&
+//             response.data.curriculum[0].lessons && response.data.curriculum[0].lessons.length > 0) {
+//           setSelectedLesson(response.data.curriculum[0].lessons[0]);
+//         }
+//       } catch (error) {
+//         console.error('Error fetching course:', error);
+//       }
+//     };
+
+//     fetchCourse();
+//   }, [id]);
+
+//   const handleTabChange = (tab) => {
+//     setActiveTab(tab);
+//   };
+
+
   const handleLessonClick = (lesson) => {
     if (lesson.free || hasPaid) {
       setSelectedLesson(lesson);
@@ -72,11 +107,20 @@ const CourseDetail = () => {
   const handleVideoError = () => {
     setVideoError(true);
   };
+  if (!course) {
+    return <div>Loading...</div>;
+  }
+
 
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
+      {course?.title ? (
+  <h1>{course.title}</h1>
+) : (
+  <p>Loading...</p>
+)}
+
 
         <div className="mb-4">
           {videoError ? (
