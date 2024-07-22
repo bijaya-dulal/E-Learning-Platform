@@ -2,20 +2,32 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api/api';
+import api from '../api/axios';
 
 const SignIn = () => {
   const { register: formRegister, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  
+  const sendOTP = async (email) => {
+    try {
+      const response = await api.post('/generate-otp/', { email });
+      console.log('OTP sent:', response.data);
+
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Error sending OTP');
+    }
+  };
 
   const onSubmit = async (data, role) => {
     try {
-      const response = await api.post('/register/', {
+      const response = await api.post('/register/',{
         username: data.name,
         email: data.email,
         password: data.password
-      });
+      }); 
       console.log('User registered:', response.data);
+      await sendOTP(data.email); 
       navigate('/otp-confirmation');
     } catch (error) {
       console.error('Authentication error:', error);
@@ -105,4 +117,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-
