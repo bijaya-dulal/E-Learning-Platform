@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
 
+// Example course data
 const courseData = {
   1: {
     title: 'The Ultimate Guide To The Best WordPress LMS Plugin',
@@ -10,7 +11,7 @@ const courseData = {
       {
         sectionTitle: 'Lessons With Video Content',
         lessons: [
-          { title: 'Introduction', duration: '12:30', videoLink: '/videos/course-video.mp4', notesLink: '/path/to/intro-notes.pdf', free: true },
+          { title: 'Introduction', duration: '12:30', videoLink: "/videos/demo.mp4", notesLink: '/path/to/intro-notes.pdf', free: true },
           { title: 'Getting Started', duration: '10:05', videoLink: '/path/to/started-video.mp4', notesLink: '/path/to/started-notes.pdf', free: false },
           { title: 'Advanced Topics', duration: '2:25', videoLink: '/path/to/advanced-video.mp4', notesLink: '/path/to/advanced-notes.pdf', free: false },
         ],
@@ -30,8 +31,15 @@ const courseData = {
 };
 
 const CourseDetail = () => {
+  const mediaUrl =  'http://localhost:8000/media/';
+  console.log(mediaUrl)
   const { id } = useParams();
   const course = courseData[id];
+
+  if (!course) {
+    return <div>Error: Course not found</div>;
+  }
+
   const [activeTab, setActiveTab] = useState('overview');
   const [hasPaid, setHasPaid] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(course.curriculum[0].lessons[0]);
@@ -66,7 +74,7 @@ const CourseDetail = () => {
         <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
 
         <div className="mb-4">
-          <video controls src={selectedLesson.videoLink} className="w-full"></video>
+          <video controls src={`${mediaUrl}${selectedLesson.videoLink}`} className="w-full"></video>
           <div className="mt-4">
             <a href={selectedLesson.notesLink} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
           </div>

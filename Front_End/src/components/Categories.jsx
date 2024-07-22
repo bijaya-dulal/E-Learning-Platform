@@ -2,7 +2,7 @@ import React from 'react';
 import { FaPencilRuler, FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaProjectDiagram, FaDumbbell, FaBullhorn, FaBriefcase } from 'react-icons/fa'; // Importing required icons
 
 const categories = [
-  { name: 'UI/UX Design Courses', courses: 25, icon: <FaPencilRuler /> },
+  { name: 'UI/UX Design', courses: 25, icon: <FaPencilRuler /> },
   { name: 'Art & Design', courses: 25, icon: <FaPaintBrush /> },
   { name: 'Computer Science', courses: 10, icon: <FaCode /> },
   { name: 'History & Archeologic', courses: 15, icon: <FaBook /> },

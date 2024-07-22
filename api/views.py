@@ -107,7 +107,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = CourseSerializer(queryset, many=True)
-        print(serializer.data)
+        return Response(serializer.data)
+    #this is for the id based
+    def retrieve(self, request, pk=None):
+        course = Course.objects.get(pk=pk)
+        serializer = CourseSerializer(course)
         return Response(serializer.data)
 
 class EnrollmentViewSet(viewsets.ModelViewSet):

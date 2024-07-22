@@ -172,3 +172,10 @@ CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 #for video
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
+
+MEDIA_URL = env('MEDIA_URL', default='http://localhost:8000/media/')
