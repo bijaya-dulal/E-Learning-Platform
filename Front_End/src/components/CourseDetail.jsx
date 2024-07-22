@@ -11,9 +11,9 @@ const courseData = {
       {
         sectionTitle: 'Lessons With Video Content',
         lessons: [
-          { title: 'Introduction', duration: '12:30', videoLink: "demo.mp4", notesLink: '/path/to/intro-notes.pdf', free: true },
-          { title: 'Getting Started', duration: '10:05', videoLink: '/path/to/started-video.mp4', notesLink: '/path/to/started-notes.pdf', free: false },
-          { title: 'Advanced Topics', duration: '2:25', videoLink: '/path/to/advanced-video.mp4', notesLink: '/path/to/advanced-notes.pdf', free: false },
+          { title: 'Introduction', duration: '12:30', videoLink: "videos/demo.mp4", notesLink: '/path/to/intro-notes.pdf', free: true },
+          { title: 'Getting Started', duration: '10:05', videoLink: 'videos/started-video.mp4', notesLink: '/path/to/started-notes.pdf', free: false },
+          { title: 'Advanced Topics', duration: '2:25', videoLink: 'videos/advanced-video.mp4', notesLink: '/path/to/advanced-notes.pdf', free: false },
         ],
       },
     ],
@@ -31,7 +31,7 @@ const courseData = {
 };
 
 const CourseDetail = () => {
-  const mediaUrl = 'http://localhost:8000/media/';
+  const mediaUrl = 'http://localhost:8000/media/';  // Ensure this is the correct base URL for media files
   const { id } = useParams();
   const course = courseData[id];
 
@@ -84,7 +84,7 @@ const CourseDetail = () => {
           ) : (
             <video
               controls
-              src={`${mediaUrl}${selectedLesson.videoLink}`}
+              src={`${mediaUrl}${selectedLesson.videoLink}`}  // Use videoLink directly
               className="w-full"
               onError={handleVideoError}
             >
