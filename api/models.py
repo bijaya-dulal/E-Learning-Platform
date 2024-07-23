@@ -9,11 +9,49 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
-# models.py
 
-from django.db import models
 
-from django.db import models
+
+
+
+
+
+## updated model
+
+class Teacher(models.Model):
+    name = models.CharField(max_length=255)
+    bio = models.TextField()
+    email = models.CharField(max_length=255)
+    def __str__(self):
+        return self.name
+
+class Review(models.Model):
+
+    user = models.CharField(max_length=255)
+    comment = models.TextField()
+    rating = models.DecimalField(max_digits=2, decimal_places=1)
+
+    def __str__(self):
+        return f'{self.user} - {self.rating}'
+
+class Lesson(models.Model):
+
+    title = models.CharField(max_length=255)
+    duration = models.CharField(max_length=10)
+    video_link = models.FileField(upload_to='videos/', blank=True, null=True)
+    notes_link = models.FileField(upload_to='files/', blank=True, null=True)
+    free = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+class CurriculumSection(models.Model):
+
+    section_title = models.CharField(max_length=255)
+    lessons = models.ManyToManyField(Lesson, related_name='sections')
+
+    def __str__(self):
+        return self.section_title
 
 class Course(models.Model):
     CATEGORY_CHOICES = [
@@ -31,18 +69,24 @@ class Course(models.Model):
     ]
 
     title = models.CharField(max_length=255)
-    instructor = models.CharField(max_length=100)
-    lectures = models.IntegerField()
-    hours = models.IntegerField()
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    monthly_price = models.DecimalField(max_digits=8, decimal_places=2)
-    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    overview = models.TextField()
+    curriculum = models.ManyToManyField(CurriculumSection, related_name='courses')
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    rating = models.DecimalField(max_digits=2, decimal_places=1)
+    reviews = models.ManyToManyField(Review, related_name='courses')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    duration = models.CharField(max_length=10)  # Adding duration here to match your previous form example
+    price = models.IntegerField() 
+    free = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
 
+
+
+
+#this for the payment
 class Enrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(auto_now_add=True)

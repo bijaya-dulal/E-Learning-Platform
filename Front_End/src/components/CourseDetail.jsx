@@ -23,6 +23,7 @@ const courseData = {
       { user: 'Bob', comment: 'Very informative.', rating: 4.5 },
     ],
     teacher: {
+      email:'johnsmith@gmail.com',
       name: 'John Smith',
       bio: 'John is an experienced programmer with over 10 years of experience in WordPress development...',
       photo: '/path/to/photo.jpg',
@@ -49,41 +50,6 @@ const CourseDetail = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
-
-
-//update for the dynamic data loading
-// const CourseDetail = () => {
-//   const { id } = useParams();
-//   const [course, setCourse] = useState(null);
-//   const [activeTab, setActiveTab] = useState('overview');
-//   const [hasPaid, setHasPaid] = useState(false);
-//   const [selectedLesson, setSelectedLesson] = useState(null);
-//   const [newReview, setNewReview] = useState('');
-//   const [newRating, setNewRating] = useState(5);
-
-// useEffect(() => {
-//     const fetchCourse = async () => {
-//       try {
-//         const response = await axios.get(`/api/courses/${id}/`);
-//         setCourse(response.data);
-
-//         // Ensure the curriculum and lessons are available before setting the initial lesson
-//         if (response.data.curriculum && response.data.curriculum.length > 0 &&
-//             response.data.curriculum[0].lessons && response.data.curriculum[0].lessons.length > 0) {
-//           setSelectedLesson(response.data.curriculum[0].lessons[0]);
-//         }
-//       } catch (error) {
-//         console.error('Error fetching course:', error);
-//       }
-//     };
-
-//     fetchCourse();
-//   }, [id]);
-
-//   const handleTabChange = (tab) => {
-//     setActiveTab(tab);
-//   };
-
 
   const handleLessonClick = (lesson) => {
     if (lesson.free || hasPaid) {
