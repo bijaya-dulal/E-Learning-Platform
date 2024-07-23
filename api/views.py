@@ -20,7 +20,6 @@ from .serializers import OTPCodeSerializer
 
 
 
-
 class ItemListCreateView(generics.ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -107,9 +106,6 @@ class GenerateOTP(APIView):
 
 
 #Endpoint to verify OTP
-
-
-
 class VerifyOTP(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -125,6 +121,16 @@ class VerifyOTP(APIView):
             return Response({"message": "OTP verified"}, status=status.HTTP_200_OK)
         except OTPCode.DoesNotExist:
             return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+
+class CheckEmail(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if User.objects.filter(email=email).exists():
+            return Response({"exists": True}, status=status.HTTP_200_OK)
+        return Response({"exists": False}, status=status.HTTP_200_OK)
 
 
 
