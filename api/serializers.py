@@ -53,13 +53,44 @@ class UserSerializer(serializers.ModelSerializer):
 
 #for courses
 
+from .models import Course, Lesson, Review, Teacher, CurriculumSection, Enrollment
 
-from .models import Course, Enrollment
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = '__all__'
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = '__all__'
+
+class CurriculumSectionSerializer(serializers.ModelSerializer):
+    lessons = LessonSerializer(many=True)
+    lesson_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CurriculumSection
+        fields = '__all__'
+
+    def get_lesson_count(self, obj):
+        return obj.lessons.count()
+    
 
 class CourseSerializer(serializers.ModelSerializer):
+    curriculum = CurriculumSectionSerializer(many=True)
+    reviews = ReviewSerializer(many=True)
+    teacher = TeacherSerializer()
+
     class Meta:
         model = Course
         fields = '__all__'
+
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
