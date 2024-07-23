@@ -15,8 +15,7 @@ class Item(models.Model):
 
 
 
-
-## updated model
+# ## updated model
 
 class Teacher(models.Model):
     name = models.CharField(max_length=255)
@@ -68,15 +67,15 @@ class Course(models.Model):
         ('UI/UX Design', 'UI/UX Design'),
     ]
 
-    title = models.CharField(max_length=255)
-    overview = models.TextField()
-    curriculum = models.ManyToManyField(CurriculumSection, related_name='courses')
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    rating = models.DecimalField(max_digits=2, decimal_places=1)
-    reviews = models.ManyToManyField(Review, related_name='courses')
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    duration = models.CharField(max_length=10)  # Adding duration here to match your previous form example
-    price = models.IntegerField() 
+    title = models.CharField(max_length=255, default='Untitled Course')
+    overview = models.TextField(default='No overview provided.')
+    curriculum = models.ManyToManyField('CurriculumSection', related_name='courses', blank=True)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Web Management')
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
+    reviews = models.ManyToManyField('Review', related_name='courses', blank=True)
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, default=1)  # Use a valid teacher ID or handle it differently
+    duration = models.CharField(max_length=10, default='00:00')
+    price = models.IntegerField(default=0)
     free = models.BooleanField(default=False)
 
     def __str__(self):

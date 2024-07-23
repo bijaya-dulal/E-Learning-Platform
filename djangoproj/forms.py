@@ -8,3 +8,4 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         fields = ['title', 'teacher', 'duration', 'price' , 'free']
+   
