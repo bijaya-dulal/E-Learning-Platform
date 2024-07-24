@@ -1,11 +1,10 @@
-//updated dynamically
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
 import axios from 'axios';
 
 const CourseDetail = () => {
-  const mediaUrl = 'http://localhost:8000/media';  // Ensure this is the correct base URL for media files
+  const mediaUrl = 'http://localhost:8000'; // Ensure this is the correct base URL for media files
   const { id } = useParams();
   const [course, setCourse] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -19,8 +18,10 @@ const CourseDetail = () => {
     axios.get(`http://localhost:8000/api/courses/${id}/`)
       .then(response => {
         setCourse(response.data);
+        console.log(response.data);
         if (response.data.curriculum.length > 0 && response.data.curriculum[0].lessons.length > 0) {
           setSelectedLesson(response.data.curriculum[0].lessons[0]);
+          console.log(response.data.curriculum[0].lessons[0]);
         }
       })
       .catch(error => {
@@ -35,6 +36,7 @@ const CourseDetail = () => {
   const handleLessonClick = (lesson) => {
     if (lesson.free || hasPaid) {
       setSelectedLesson(lesson);
+      console.log("Video Link:", lesson.video_link);
       setVideoError(false); // Reset video error on lesson change
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -47,7 +49,7 @@ const CourseDetail = () => {
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     if (course) {
-      course.reviews.push({ user: 'Anonymous', comment: newReview, rating: newRating });
+      course.reviews.push({ user:user, comment: newReview, rating: newRating });
       setNewReview('');
       setNewRating(5);
     }
@@ -76,7 +78,8 @@ const CourseDetail = () => {
           ) : (
             <video
               controls
-              src={`${mediaUrl}${selectedLesson?.videoLink}`}  // Use videoLink directly
+              src={`${mediaUrl}${selectedLesson?.video_link}`}  // Use video_link directly
+              // src={`${mediaUrl}/videos/demo.mp4`} //static 
               className="w-full"
               onError={handleVideoError}
             >
@@ -84,7 +87,10 @@ const CourseDetail = () => {
             </video>
           )}
           <div className="mt-4">
-            <a href={selectedLesson?.notesLink} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
+          
+          </div>
+          <div className="mt-4">
+            <a href={selectedLesson?.notes_link} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
           </div>
         </div>
 
@@ -109,7 +115,7 @@ const CourseDetail = () => {
               <h2 className="text-2xl font-bold mb-2">Lessons</h2>
               {course.curriculum.map((section, index) => (
                 <div key={index} className="mb-4">
-                  <h3 className="text-xl font-semibold mb-2">{section.sectionTitle}</h3>
+                  <h3 className="text-xl font-semibold mb-2">{section.section_title}</h3>
                   <ul>
                     {section.lessons.map((lesson, lessonIndex) => (
                       <li key={lessonIndex} className="flex justify-between items-center mb-2">
@@ -138,7 +144,7 @@ const CourseDetail = () => {
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2">Tutor</h2>
               <div className="flex items-center">
-                <img src={course.teacher.photo} alt={course.teacher.name} className="w-16 h-16 rounded-full mr-4" />
+                <img src={`${mediaUrl}${course.teacher.photo}`} alt={course.teacher.name} className="w-16 h-16 rounded-full mr-4" />
                 <div>
                   <h3 className="text-xl font-semibold">{course.teacher.name}</h3>
                   <p>{course.teacher.bio}</p>
