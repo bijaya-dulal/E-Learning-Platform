@@ -9,12 +9,12 @@ import Contact from './pages/Contact.jsx';
 import SignIn from './pages/SignIn.jsx';
 import Login from './pages/Login.jsx';
 import CourseDetail from './components/CourseDetail';
-import Payment from './components/Payment';
+import Payment from './components/Payment.jsx';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
-import Schedule from './components/Schedule.jsx'
+import Schedule from './components/Schedule.jsx';
 
 
 
@@ -33,7 +33,7 @@ const App = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/login" element={<Login />} />
         <Route path="/course/:id" element={<CourseDetail />} />
-        <Route path="/payment/:id" element={<Payment />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="/studentDashboard" element={<StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
         <Route path="itemlist" element={<ItemList />} />

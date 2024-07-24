@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
+import { useNavigate } from 'react-router-dom';
 
 const courseData = {
   1: {
@@ -48,9 +49,10 @@ const CourseDetail = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+  const navigate = useNavigate();
 
   const handlePaymentClick = () => {
-    setHasPaid(true);
+    navigate('/payment');
   };
 
   const handleReviewSubmit = (e) => {
@@ -114,7 +116,7 @@ const CourseDetail = () => {
               </div>
             ))}
             {!hasPaid && (
-              <button onClick={handlePaymentClick} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">Unlock All Videos</button>
+              <button onClick={handlePaymentClick} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">Pay to Unlock All Videos</button>
             )}
           </div>
         )}
