@@ -13,6 +13,8 @@ import Payment from './components/Payment';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
+import TeacherDashboard from './pages/TeacherDashboard.jsx';
+import Schedule from './components/Schedule.jsx'
 import CoursePage from './pages/CoursePage.jsx';
 
 
@@ -38,6 +40,8 @@ const App = () => {
         <Route path="/studentDashboard" element={<StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
         <Route path="itemlist" element={<ItemList />} />
+        <Route path="/TeacherDashboard" element={<TeacherDashboard />} />
+        <Route path="/Schedule/:tab" element={<Schedule />} />
         <Route path="videos" element={<CoursePage/>} />
       </Routes>
   

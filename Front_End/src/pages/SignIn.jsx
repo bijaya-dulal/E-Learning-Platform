@@ -1,4 +1,3 @@
-//asim ko lai update gareko.
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
@@ -8,18 +7,39 @@ const SignIn = () => {
   const { register: formRegister, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await api.post('/check-email/', { email });
+      return response.data.exists;
+    } catch (error) {
+      console.error('Error checking email:', error);
+      alert('Error checking email');
+    }
+  };
+
+  const sendOTP = async (email) => {
+    try {
+      const response = await api.post('/generate-otp/', { email });
+      console.log('OTP sent:', response.data);
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Error sending OTP');
+    }
+  };
+
   const onSubmit = async (data, role) => {
     try {
-      const response = await api.post('/register/', {
-        username: data.name,
-        email: data.email,
-        password: data.password
-      });
-      console.log('User registered:', response.data);
-      navigate('/otp-confirmation');
+      const emailExists = await checkEmailExists(data.email);
+      if (emailExists) {
+        alert('User already exists');
+        return;
+      }
+
+      await sendOTP(data.email);
+      navigate('/otp-confirmation', { state: { user: data, role } });
     } catch (error) {
-      console.error('Authentication error:', error);
-      alert('Error registering user');
+      console.error('Error:', error);
+      alert('Error during registration');
     }
   };
 
@@ -105,4 +125,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-

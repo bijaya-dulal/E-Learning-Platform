@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+#OTP ko lagi
+from django.utils import timezone
 
 
 class Item(models.Model):
@@ -16,6 +18,7 @@ class Item(models.Model):
 
 
 # ## updated model
+#for video courses
 
 class Teacher(models.Model):
     name = models.CharField(max_length=255)
@@ -93,3 +96,14 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f'{self.course.title} - {self.enrolled_at}'
+    
+
+#this is for the otp   
+class OTPCode(models.Model):
+    email = models.EmailField()
+    code = models.CharField(max_length=4)
+    expiry_time = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.email} - {self.code}'

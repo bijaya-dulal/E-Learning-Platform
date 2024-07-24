@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+#OTP ko lagi
+from .models import OTPCode
 
 from rest_framework import permissions, status
 #from .validations import custom_validation, validate_email, validate_password
@@ -46,6 +48,18 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserModel
+		fields = ('email', 'username')
+
+# OTP ko lagi
+
+
+class OTPCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OTPCode
+        fields = '__all__'
+
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
