@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
@@ -174,6 +175,245 @@ const CourseDetail = () => {
     <Footer></Footer>
     </div>
   );
+=======
+import React, { useEffect, useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import Footer from './Footer';
+import axios from 'axios';
+import EsewaPayment from './EsewaPayment';
+
+const CourseDetail = () => {
+    const mediaUrl = 'http://localhost:8000/media';
+    const { id } = useParams();
+    const location = useLocation();
+    const [course, setCourse] = useState(null);
+    const [activeTab, setActiveTab] = useState('overview');
+    const [hasPaid, setHasPaid] = useState(false);
+    const [selectedLesson, setSelectedLesson] = useState(null);
+    const [newReview, setNewReview] = useState('');
+    const [newRating, setNewRating] = useState(5);
+    const [videoError, setVideoError] = useState(false);
+
+    useEffect(() => {
+        // Fetch course details
+        axios.get(`http://localhost:8000/api/courses/${id}/`)
+            .then(response => {
+                setCourse(response.data);
+                if (response.data.curriculum.length > 0 && response.data.curriculum[0].lessons.length > 0) {
+                    setSelectedLesson(response.data.curriculum[0].lessons[0]);
+                }
+            })
+            .catch(error => {
+                console.error("There was an error fetching the course data!", error);
+            });
+
+        // Check payment status based on URL query parameter
+        const query = new URLSearchParams(location.search);
+        const paymentStatus = query.get('payment');
+
+        if (paymentStatus === 'success' || paymentStatus === 'failure') {
+            axios.post(`http://localhost:8000/api/update-payment-status/${id}/`, { payment: paymentStatus })
+                .then(response => {
+                    setHasPaid(response.data.has_paid);
+                })
+                .catch(error => {
+                    console.error("There was an error updating payment status!", error);
+                });
+        } else {
+            // If there's no payment status, fetch the payment status from the backend
+            axios.get(`http://localhost:8000/api/payment-status/${id}/`)
+                .then(response => {
+                    setHasPaid(response.data.has_paid);
+                })
+                .catch(error => {
+                    console.error("There was an error checking payment status!", error);
+                });
+        }
+    }, [id, location.search]);
+
+    useEffect(() => {
+        // Fetch video access status
+        axios.get(`http://localhost:8000/api/video-access-status/${id}/`)
+            .then(response => {
+                // Update course lessons based on access status
+                if (course) {
+                    const updatedCurriculum = course.curriculum.map(section => ({
+                        ...section,
+                        lessons: section.lessons.map(lesson => ({
+                            ...lesson,
+                            is_accessible: response.data.lessons.find(l => l.id === lesson.id)?.is_accessible || false
+                        }))
+                    }));
+                    setCourse({ ...course, curriculum: updatedCurriculum });
+                }
+            })
+            .catch(error => {
+                console.error("There was an error checking video access status!", error);
+            });
+    }, [hasPaid, course, id]);
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
+
+    const handleLessonClick = (lesson) => {
+        if (lesson.is_accessible) {
+            setSelectedLesson(lesson);
+            setVideoError(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const handleReviewSubmit = (e) => {
+        e.preventDefault();
+        if (course) {
+            course.reviews.push({ user: 'Anonymous', comment: newReview, rating: newRating });
+            setNewReview('');
+            setNewRating(5);
+        }
+    };
+
+    const handleVideoError = () => {
+        setVideoError(true);
+    };
+
+    if (!course) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div>
+            <div className="container mx-auto px-4 py-8">
+                {course.title ? (
+                    <h1>{course.title}</h1>
+                ) : (
+                    <p>Loading...</p>
+                )}
+
+                <div className="mb-4">
+                    {videoError ? (
+                        <div className="text-center text-red-500">Content Unavailable</div>
+                    ) : (
+                        <video
+                            controls
+                            src={selectedLesson && selectedLesson.is_accessible && selectedLesson.videoLink ? `${mediaUrl}${selectedLesson.videoLink}` : `${mediaUrl}/videos/demo2.mp4`}
+                            className="w-full"
+                            onError={handleVideoError}
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+                    )}
+                    <div className="mt-4">
+                        <a href={selectedLesson?.notesLink} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
+                    </div>
+                </div>
+
+                <nav className="mb-4 border-b">
+                    <ul className="flex space-x-4">
+                        {['overview', 'lessons', 'tutor', 'rating'].map(tab => (
+                            <li
+                                key={tab}
+                                className={`cursor-pointer pb-2 ${activeTab === tab ? 'border-b-2 border-teal-500' : ''}`}
+                                onClick={() => handleTabChange(tab)}
+                            >
+                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+
+                <div>
+                    {activeTab === 'overview' && (
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-bold mb-2">Overview</h2>
+                            <p>{course.overview}</p>
+                        </div>
+                    )}
+                    {activeTab === 'lessons' && (
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-bold mb-2">Lessons</h2>
+                            {course.curriculum.map((section, index) => (
+                                <div key={index} className="mb-4">
+                                    <h3 className="text-xl font-semibold mb-2">{section.sectionTitle}</h3>
+                                    <ul>
+                                        {section.lessons.map((lesson, lessonIndex) => (
+                                            <li key={lessonIndex} className="flex justify-between items-center mb-2">
+                                                <div>
+                                                    <span>{lesson.title}</span>
+                                                    <span className="ml-4 text-gray-500">{lesson.duration}</span>
+                                                </div>
+                                                <button 
+                                                    onClick={() => handleLessonClick(lesson)}
+                                                    className={`text-teal-500 hover:underline ${!lesson.is_accessible ? 'cursor-not-allowed text-gray-500' : ''}`}
+                                                    disabled={!lesson.is_accessible}
+                                                >
+                                                    {lesson.is_accessible ? 'Preview' : 'Locked'}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                            {!hasPaid && (
+                                <EsewaPayment />
+                            )}
+                        </div>
+                    )}
+                    {activeTab === 'tutor' && (
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-bold mb-2">Tutor</h2>
+                            <p>{course.tutorName}</p>
+                            <p>{course.tutorDescription}</p>
+                        </div>
+                    )}
+                    {activeTab === 'rating' && (
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-bold mb-2">Rating & Reviews</h2>
+                            <div className="mb-4">
+                                {course.reviews.map((review, index) => (
+                                   
+
+                                    <div key={index} className="mb-4">
+                                        <p className="font-semibold">{review.user}</p>
+                                        <p className="text-yellow-500">{"⭐".repeat(review.rating)}</p>
+                                        <p>{review.comment}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <form onSubmit={handleReviewSubmit}>
+                                <div className="mb-2">
+                                    <label htmlFor="rating" className="block font-medium">Rating</label>
+                                    <input 
+                                        type="number" 
+                                        id="rating" 
+                                        value={newRating}
+                                        onChange={(e) => setNewRating(parseInt(e.target.value))}
+                                        className="border rounded px-2 py-1 w-full"
+                                        min="1" max="5"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-2">
+                                    <label htmlFor="comment" className="block font-medium">Review</label>
+                                    <textarea 
+                                        id="comment" 
+                                        value={newReview}
+                                        onChange={(e) => setNewReview(e.target.value)}
+                                        className="border rounded px-2 py-1 w-full"
+                                        rows="4"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" className="bg-teal-500 text-white px-4 py-2 rounded">Submit</button>
+                            </form>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <Footer />
+        </div>
+    );
+>>>>>>> Stashed changes
 };
 
 export default CourseDetail;
