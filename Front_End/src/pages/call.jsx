@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const VideoCall = () => {
   const { roomID: roomIDFromParams } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUrlParams = (url) => {
@@ -26,7 +27,7 @@ const VideoCall = () => {
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);
     zp.joinRoom({
-      container: document.querySelector("#root"),
+      container: document.querySelector("#video-call-container"),
       sharedLinks: [{
         name: 'Personal link',
         url: window.location.protocol + '//' + window.location.host + window.location.pathname + '?roomID=' + roomID,
@@ -49,7 +50,13 @@ const VideoCall = () => {
   }, [roomIDFromParams]);
 
   return (
-    <div id="root" style={{ width: '100vw', height: '100vh' }}></div>
+    <div>
+      <div id="video-call-container" style={{ width: '100vw', height: '100vh' }}></div>
+      <div>
+        <Link to="/">Home</Link>
+        <button onClick={() => navigate(-1)}>Go Back</button>
+      </div>
+    </div>
   );
 };
 

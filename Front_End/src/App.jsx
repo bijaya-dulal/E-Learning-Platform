@@ -15,8 +15,8 @@ import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import Schedule from './components/Schedule.jsx'
-import CoursePage from './pages/CoursePage.jsx';
 
+import VideoCall  from './pages/call.jsx'; 
 
 
 const App = () => {
@@ -42,7 +42,8 @@ const App = () => {
         <Route path="itemlist" element={<ItemList />} />
         <Route path="/TeacherDashboard" element={<TeacherDashboard />} />
         <Route path="/Schedule/:tab" element={<Schedule />} />
-        <Route path="videos" element={<CoursePage/>} />
+        
+        <Route path="/call" element={<VideoCall/>} />
       </Routes>
   
       

@@ -12,7 +12,7 @@ const Navbar = () => {
     <nav className="bg-teal-500 text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center p-4 relative">
         <div className="text-2xl font-bold">
-          <Link to="/">Logo</Link>
+          <Link to="/">E-learning</Link>
         </div>
         <div className="md:hidden absolute right-4 top-4">
           <button onClick={toggleMenu} className="focus:outline-none">
