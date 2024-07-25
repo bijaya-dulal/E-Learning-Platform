@@ -16,7 +16,7 @@ import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import Schedule from './components/Schedule.jsx';
-import Schedule from './components/Schedule.jsx'
+
 import VideoCall  from './pages/call.jsx'; 
 
 
