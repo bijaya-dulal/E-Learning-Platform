@@ -48,6 +48,7 @@ const StudentDashboard = () => {
           },
         });
         setUser(response.data.user);
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching user details:', error);
       }
@@ -90,7 +91,7 @@ const StudentDashboard = () => {
           <div className="flex items-center mb-4">
             <FaUser className="text-4xl text-teal-500 mr-4" />
             <div>
-              <h2 className="text-2xl font-bold">{user ? user.first_name : 'Loading...'}</h2>
+              <h2 className="text-2xl font-bold">{user ? user.first_name: 'Loading...'}</h2>
               <p className="text-gray-500">Student</p>
             </div>
           </div>

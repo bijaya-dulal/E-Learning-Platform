@@ -22,7 +22,7 @@ const onSubmit = async (data, role) => {
        sessionStorage.setItem('session_id', response.data.session_id);
       
       // Redirect to a protected page or update UI
-      navigate('/StudentDashboard/'); // Adjust the route as needed
+      navigate('/Dashboard/'); // Adjust the route as needed
     } catch (error) {
       console.error('Login error', error);
       alert('Invalid email or password');

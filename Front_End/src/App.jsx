@@ -1,5 +1,6 @@
 // src/App.js
-import React from 'react';
+import React , { useState, useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Home from './pages/Home.jsx';
@@ -15,11 +16,30 @@ import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import Schedule from './components/Schedule.jsx'
-
 import VideoCall  from './pages/call.jsx'; 
 
 
+
+
+
 const App = () => {
+  const [isStaff, setIsStaff] = useState(null);
+  
+  useEffect(() => {
+    // Fetch user information when the component mounts
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/user/'); // Adjust the URL to your actual endpoint
+        console.log(response.data)
+        setIsStaff(response.data.user.is_staff);
+        console.log(response.data.user.is_staff)
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
   
   return (
    
@@ -37,10 +57,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/course/:id" element={<CourseDetail />} />
         <Route path="/payment/:id" element={<Payment />} />
-        <Route path="/studentDashboard" element={<StudentDashboard />} />
+        <Route path="/Dashboard" element={isStaff ? <TeacherDashboard /> : <StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
-        <Route path="itemlist" element={<ItemList />} />
-        <Route path="/TeacherDashboard" element={<TeacherDashboard />} />
         <Route path="/Schedule/:tab" element={<Schedule />} />
         
         <Route path="/call" element={<VideoCall/>} />
