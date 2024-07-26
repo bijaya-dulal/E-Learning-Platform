@@ -51,7 +51,7 @@ const CourseDetail = () => {
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     if (course) {
-      course.reviews.push({ user:user, comment: newReview, rating: newRating });
+      course.reviews.push({ user:'user', comment: newReview, rating: newRating });
       setNewReview('');
       setNewRating(5);
     }

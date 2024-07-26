@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from django.shortcuts import redirect
 from rest_framework.response import Response
 from .serializers import ItemSerializer
 from .models import Item, Course
@@ -18,11 +19,11 @@ from rest_framework import status
 from .models import OTPCode
 from .serializers import OTPCodeSerializer
 #esewa ko lagi 
-from django.contrib.auth.mixins import LoginRequiredMixin
+#from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.http import JsonResponse
 import requests
-from requests.auth import HTTPBasicAuth
+#from requests.auth import HTTPBasicAuth
 
 
 class ItemListCreateView(generics.ListCreateAPIView):
@@ -79,7 +80,9 @@ class UserLogin(APIView):
             print(f"Authenticated User: {user}")
             
             if user is not None:
+                
                 login(request, user)
+                
                 print(f"Session Key: {request.session.session_key}")
                 return Response({
                     'username': user.first_name,
@@ -96,6 +99,7 @@ class UserLogout(APIView):
 	def post(self, request):
 		logout(request)
 		print("logout")
+          
 		return Response(status=status.HTTP_200_OK)
 
 
