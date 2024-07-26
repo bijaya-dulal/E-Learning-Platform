@@ -19,6 +19,7 @@ const onSubmit = async (data, role) => {
       });  
       // Store the token in local storage or a context
       localStorage.setItem('session_id', response.data.session_id);
+      localStorage.setItem('email', response.data.email);
       sessionStorage.setItem('session_id', response.data.session_id);
       
       // Redirect to a protected page or update UI

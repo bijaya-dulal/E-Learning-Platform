@@ -55,13 +55,13 @@ const TeacherDashboard = () => {
     const renderContent = () => {
         switch (activeTab) {
             case 'profile':
-                return <TeacherProfile />;
+                return <TeacherProfile user={user} />;
             case 'courses':
-                return <TeacherCourses />;
+                return <TeacherCourses  user={user}/>;
             case 'schedule':
-                return <Schedule />;
+                return <Schedule user={user} />;
             default:
-                return <TeacherProfile />;
+                return <TeacherProfile user={user} />;
         }
     };
 

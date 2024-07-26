@@ -21,10 +21,13 @@ class Item(models.Model):
 # ## updated model
 #for video courses
 
+
 class Teacher(models.Model):
     name = models.CharField(max_length=255)
     bio = models.TextField()
     email = models.CharField(max_length=255)
+    photo = models.ImageField(upload_to='teacher_photos/', null=True, blank=True)  # New field for storing photo
+
     def __str__(self):
         return self.name
 

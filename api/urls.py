@@ -26,15 +26,11 @@ router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
 from .views import CourseViewSet, EnrollmentViewSet
 
 from rest_framework.routers import DefaultRouter
-router = DefaultRouter()
-router.register(r'courses', CourseViewSet, basename='course')
-router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
-
-
+from .views import TeacherDetailView
 urlpatterns = [
        path('', include(router.urls)),
   
-
+        path('teacher/', TeacherDetailView.as_view(), name='teacher-detail'),
     path('items/',views.ItemListCreateView.as_view(), name='item-list-create'),
   	path('register/', views.UserRegister.as_view(), name='register'),
 	path('login/', views.UserLogin.as_view(), name='login'),

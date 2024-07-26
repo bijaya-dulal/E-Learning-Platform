@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, TeacherSerializer
 from rest_framework import permissions, status
 from django.contrib.auth import authenticate, login
 #OTP ko lagi
@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from rest_framework import status
-from .models import OTPCode
+from .models import OTPCode , Teacher
 from .serializers import OTPCodeSerializer
 #esewa ko lagi 
 #from django.contrib.auth.mixins import LoginRequiredMixin
@@ -202,6 +202,43 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
         # Perform enrollment logic here (e.g., create Enrollment record)
         enrollment = Enrollment.objects.create(course=course)
         return Response({'message': 'Enrolled successfully'})
+
+#teacher details 
+#update fro email matching quer
+# views.py
+from rest_framework.parsers import MultiPartParser, FormParser
+
+class TeacherDetailView(APIView):
+  
+    parser_classes = [MultiPartParser, FormParser]  # Add parsers to handle file uploads
+
+    def get(self, request):
+        email = request.query_params.get('email')  # Get the email from query parameters
+        if not email:
+            return Response({'error': 'Email parameter is missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            teacher = Teacher.objects.get(email=email)
+            serializer = TeacherSerializer(teacher)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Teacher.DoesNotExist:
+            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request):
+        email = request.query_params.get('email')  # Get the email from query parameters
+        if not email:
+            return Response({'error': 'Email parameter is missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            teacher = Teacher.objects.get(email=email)
+            serializer = TeacherSerializer(teacher, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Teacher.DoesNotExist:
+            return Response({'error': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 import hmac

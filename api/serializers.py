@@ -82,7 +82,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = '__all__'
+        fields = ['name', 'bio', 'email', 'photo']
 
 class CurriculumSectionSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True)
