@@ -120,3 +120,11 @@ class UserCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCourse
         fields = ['has_paid']
+
+
+#--------------------for meeting schedule-----------------
+from .models import ScheduledSession
+class ScheduledSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScheduledSession
+        fields = ['id', 'course', 'date', 'time', 'user']

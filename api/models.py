@@ -133,3 +133,14 @@ class Payment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     has_paid = models.BooleanField(default=False)
 
+##------------------for meeting schedule------------------###
+
+
+class ScheduledSession(models.Model):
+    course = models.CharField(max_length=100)
+    date = models.DateField()
+    time = models.TimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assuming each session is tied to a user
+
+    def __str__(self):
+        return f"{self.course} on {self.date} at {self.time}"

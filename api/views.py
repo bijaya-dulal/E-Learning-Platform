@@ -5,7 +5,7 @@ from .serializers import ItemSerializer
 from .models import Item, Course ,Lesson,OTPCode , Teacher
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, login, logout
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, TeacherSerializer
@@ -467,3 +467,23 @@ def UpdatePay(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
+##------------------------for meeting schedule--------##
+from .serializers import ScheduledSessionSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import ScheduledSession
+
+
+class ScheduledSessionCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = request.user.id
+        serializer = ScheduledSessionSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
