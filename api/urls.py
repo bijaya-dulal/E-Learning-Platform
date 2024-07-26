@@ -9,11 +9,11 @@ from .views import CheckEmail, GenerateOTP, VerifyOTP
 from .views import CourseViewSet, EnrollmentViewSet
 
 from rest_framework.routers import DefaultRouter
-from .views import esewa_payment
+from .views import esewa_payment ,enroll_in_course,get_video_access_status
 #from .views import success_view, failure_view
 from .views import PaymentStatusView, EsewaVerifyView
 from .views import update_payment_status,get_payment_status
-from .views import get_video_access_status
+
 
 
 
@@ -39,7 +39,7 @@ urlpatterns = [
 	path('check-email/', CheckEmail.as_view(), name='check-email'),
 	path('generate-otp/', GenerateOTP.as_view(), name='generate_otp'),
     path('verify-otp/', VerifyOTP.as_view(), name='verify_otp'),
-
+        path('enroll/<int:course_id>/', enroll_in_course, name='enroll_in_course'),
 	path('esewa-payment/', esewa_payment, name='esewa_payment'),
 	#path('success/', success_view, name='success'),
     #path('failure/', failure_view, name='failure'),
@@ -48,6 +48,8 @@ urlpatterns = [
 	path('update-payment-status/<int:course_id>/', update_payment_status, name='update_payment_status'),
 	path('video-access-status/<int:course_id>/', get_video_access_status, name='get_video_access_status'),
 	
+	#for payment check
+     path('usercourse/title/', views. get_user_course_by_title, name='usercourse-detail'),
 	
 	
 

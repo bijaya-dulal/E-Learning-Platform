@@ -5,10 +5,11 @@ from django.contrib import admin
 
 
 
-from .models import Course , CurriculumSection, Lesson, Review, Teacher
+from .models import Course , CurriculumSection, Lesson, Review, Teacher,  UserCourse
 
 admin.site.register(Course)
 admin.site.register(CurriculumSection)
 admin.site.register(Lesson)
 admin.site.register(Review)
 admin.site.register(Teacher)
+admin.site.register(UserCourse)

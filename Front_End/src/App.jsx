@@ -16,6 +16,7 @@ import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import Schedule from './components/Schedule.jsx';
 import VideoCall from './pages/Videocall.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import  EsewaPayment from './components/EsewaPayment.jsx'
 
 const App = () => {
   const [isStaff, setIsStaff] = useState(null);
@@ -57,8 +58,8 @@ const App = () => {
           <Route path="/schedule/:tab" element={<Schedule />} />
           <Route path="/call" element={<VideoCall />} />
           <Route path="/course/:id" element={<CourseDetail />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/payment/:id" element={<Payment />} />
+        <Route path="/payment" element={<EsewaPayment />} />
+        <Route path="/payment/:id" element={< EsewaPayment />} />
         </Route>
       </Routes>
     </Router>

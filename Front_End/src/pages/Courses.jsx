@@ -1,10 +1,11 @@
 
 
-// export default Courses;
+//updated for usercourse adjustment
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import Footer from '../components/Footer.jsx';
 
 const categories = [
@@ -20,7 +21,6 @@ const categories = [
   { id: 10, name: 'Business Administration', courses: 17, icon: <FaBriefcase className="text-4xl text-teal-500"/> },
   { id: 11, name: 'Web Management', courses: 17, icon: <FaProjectDiagram className="text-4xl text-teal-500"/> },
 ];
-
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -57,8 +57,38 @@ const Courses = () => {
     coursesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleEnrollClick = (id) => {
-    navigate(`/course/${id}`);
+  const handleEnrollClick = async (id) => {
+    try {
+      const sessionId = sessionStorage.getItem('session_id');
+      if (!sessionId) {
+        navigate('/signin');
+        return;
+      }
+
+      const csrfToken = Cookies.get('csrftoken');
+      
+      const response = await axios.post(
+        `/api/enroll/${id}/`,
+        {},
+        {
+          headers: {
+            'Authorization': `Session ${sessionId}`,
+            'X-CSRFToken': csrfToken,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert('Enrollment successful!');
+        navigate(`/course/${id}`);
+      } else {
+        alert('Enrollment failed.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      alert('Enrollment failed.');
+    }
+
   };
 
   const filteredCourses = selectedCategory 
@@ -106,11 +136,16 @@ const Courses = () => {
                       <span className="text-gray-500">({course.rating})</span>
                     </div>
                   </div>
-                  <p className="text-gray-500 mb-4"> {course.category}</p>
+                  <p className="text-gray-500 mb-4">{course.category}</p>
                   <p className="text-gray-500 mb-4">by {course.teacher.name}</p>
-                  <p className="text-gray-500 mb-4"> {course.curriculum.reduce((total, section) => total + section.lesson_count, 0)}lectures ({course.duration})</p>
-                  <p className="text-teal-500 mb-4">${course.price} All Course /  per month</p>
-                  <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
+                  <p className="text-gray-500 mb-4">{course.curriculum.reduce((total, section) => total + section.lesson_count, 0)} lectures ({course.duration})</p>
+                  <p className="text-teal-500 mb-4">${course.price} All Course / per month</p>
+                  <button
+                    onClick={() => handleEnrollClick(course.id)}
+                    className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
+                  >
+                    ENROLL NOW!
+                  </button>
                 </div>
               ))
             ) : (

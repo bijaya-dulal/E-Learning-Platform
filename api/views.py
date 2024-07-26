@@ -2,7 +2,7 @@ from rest_framework import generics, permissions
 from django.shortcuts import redirect
 from rest_framework.response import Response
 from .serializers import ItemSerializer
-from .models import Item, Course
+from .models import Item, Course ,Lesson,OTPCode , Teacher
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
@@ -16,7 +16,6 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from rest_framework import status
-from .models import OTPCode , Teacher
 from .serializers import OTPCodeSerializer
 #esewa ko lagi 
 #from django.contrib.auth.mixins import LoginRequiredMixin
@@ -300,6 +299,7 @@ class PaymentStatusView(View):
 
 class EsewaVerifyView(View):
     def get(self, request, *args, **kwargs):
+        
         oid = request.GET.get("oid")
         amt = request.GET.get("amt")
         refId = request.GET.get("refId")
@@ -316,14 +316,17 @@ class EsewaVerifyView(View):
         status = root[0].text.strip()
 
         order_id = oid.split("_")[1]
-        user_course = UserCourse.objects.get(id=order_id)
+        user_course = Course.objects.get(id=order_id)
 
         if status == "Success":
+            print('success')
+           
             user_course.has_paid = True
             user_course.save()
             # Redirect to course detail with success message
             return redirect(f"/course/{order_id}/?payment=success")
         else:
+            print('fail')
             # Redirect to course detail with failure message
             return redirect(f"/course/{order_id}/?payment=failure")
 
@@ -394,3 +397,42 @@ def get_video_access_status(request, course_id):
 
     return JsonResponse({"lessons": video_list, "has_paid": has_paid})
 
+
+
+
+###for usercourse register_required
+from django.contrib.auth.decorators import login_required
+from .models import Course, UserCourse
+def enroll_in_course(request, course_id):
+    course = Course.objects.get(id=course_id)
+    user = request.user
+
+    # Check if the user is already enrolled in the course
+    if UserCourse.objects.filter(user=user, course=course).exists():
+        return redirect(f"/course/{course_id}/?already_enrolled=true")
+
+    # Create a new UserCourse entry
+    UserCourse.objects.create(user=user, course=course)
+
+    # Redirect to payment page or show enrollment success message
+    return redirect(f"/course/{course_id}/?enrollment=success")
+
+from rest_framework.decorators import api_view
+from .serializers import UserCourseSerializer
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+
+def get_user_course_by_title(request):
+    username = request.GET.get('username')
+    title = request.GET.get('title')
+    
+    if username and title:
+        # Perform query to get UserCourse
+        user_course = UserCourse.objects.filter(user__username=username, course__title=title).first()
+        has_paid = user_course.has_paid if user_course else False
+        return JsonResponse({'has_paid': has_paid})
+    else:
+        return JsonResponse({'error': 'Invalid parameters'}, status=400)
