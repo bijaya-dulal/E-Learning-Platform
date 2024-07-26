@@ -141,6 +141,6 @@ class ScheduledSession(models.Model):
     date = models.DateField()
     time = models.TimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assuming each session is tied to a user
-
+    student =   models.CharField(max_length=100)
     def __str__(self):
         return f"{self.course} on {self.date} at {self.time}"

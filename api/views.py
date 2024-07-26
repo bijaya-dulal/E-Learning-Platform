@@ -494,3 +494,15 @@ class ScheduledSessionCreateView(APIView):
         sessions = ScheduledSession.objects.filter(user=user)
         serializer = ScheduledSessionSerializer(sessions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+##-----fetchh the students from the user model
+
+
+
+class StudentListView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    def get(self, request, *args, **kwargs):
+        students = User.objects.filter(is_staff=False)  # Get all non-staff users
+        serializer = UserSerializer(students, many=True)
+        return Response(serializer.data)

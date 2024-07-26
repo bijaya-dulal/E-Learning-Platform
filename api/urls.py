@@ -13,7 +13,7 @@ from .views import esewa_payment ,enroll_in_course,get_video_access_status
 #from .views import success_view, failure_view
 from .views import PaymentStatusView, EsewaVerifyView
 from .views import update_payment_status,get_payment_status
-from .views import ScheduledSessionCreateView
+from .views import ScheduledSessionCreateView,StudentListView
 
 
 
@@ -53,7 +53,7 @@ urlpatterns = [
 	path('updatepay/', views.UpdatePay, name='update_payment_status'),
 	#for meeting schedule
 	path('schedule/', ScheduledSessionCreateView.as_view(), name='schedule_session'),
+     path('students/', StudentListView.as_view(), name='students-list'),
+
 
 ]
-
-

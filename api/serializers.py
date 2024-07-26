@@ -127,4 +127,4 @@ from .models import ScheduledSession
 class ScheduledSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScheduledSession
-        fields = ['id', 'course', 'date', 'time', 'user']
+        fields = ['id', 'course', 'date', 'time', 'user', 'student']
