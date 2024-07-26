@@ -44,8 +44,8 @@ class Lesson(models.Model):
     video_link = models.FileField(upload_to='videos/', blank=True, null=True)
     notes_link = models.FileField(upload_to='files/', blank=True, null=True)
     free = models.BooleanField(default=False)
+    is_accessible = models.BooleanField(default=False)
 
-    is_accessible = models.BooleanField(default=False) 
 
 
     def __str__(self):

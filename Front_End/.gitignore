@@ -32,5 +32,4 @@ db.sqlite3
 djangoproj/__pycache__
 *.pyc
 
-*.pyc
-__pycache__/
+
