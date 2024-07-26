@@ -56,7 +56,7 @@ const App = () => {
           <Route path="/dashboard" element={isStaff ? <TeacherDashboard /> : <StudentDashboard />} />
           <Route path="/otp-confirmation" element={<OtpConfirmation />} />
           <Route path="/schedule/:tab" element={<Schedule />} />
-          <Route path="/call" element={<VideoCall />} />
+          <Route path="/videocall" element={<VideoCall />} />
           <Route path="/course/:id" element={<CourseDetail />} />
         <Route path="/payment" element={<EsewaPayment />} />
         <Route path="/payment/:id" element={< EsewaPayment />} />

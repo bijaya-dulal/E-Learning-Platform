@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';  // Import Cookies to manage CSRF token
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
 const Schedule = () => {
     const [sessions, setSessions] = useState([]);
@@ -10,6 +11,8 @@ const Schedule = () => {
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState('');
 
+    const navigate = useNavigate();  // Initialize navigate function
+
     useEffect(() => {
         // Fetch students
         const fetchStudents = async () => {
@@ -17,7 +20,7 @@ const Schedule = () => {
                 const csrfToken = Cookies.get('csrftoken');
                 const response = await axios.get('/api/students/', {
                     headers: {
-                        'X-CSRFToken': csrfToken,
+                        'X-CSRFToken': csrfToken,  // Include CSRF token in the header
                     },
                 });
                 setStudents(response.data);
@@ -67,6 +70,11 @@ const Schedule = () => {
             console.error('Error scheduling session:', error);
             alert('Scheduling session failed.');
         }
+    };
+
+    const handleStartMeeting = (sessionId) => {
+        // Navigate to VideoCall component
+        navigate(`/videocall`);
     };
 
     return (
@@ -119,10 +127,18 @@ const Schedule = () => {
                 <h3 className="text-xl font-bold mb-4">Scheduled Sessions</h3>
                 <ul>
                     {sessions.map((session) => (
-                        <li key={session.id} className="mb-2">
-                            <h4 className="font-bold">{session.course}</h4>
-                            <p>{session.date} at {session.time}</p>
-                            <p>Student: {session.student.username}</p>
+                        <li key={session.id} className="mb-2 flex justify-between items-center">
+                            <div>
+                                <h4 className="font-bold">{session.course}</h4>
+                                <p>{session.date} at {session.time}</p>
+                                <p>Student: {session.student.username}</p> {/* Display student username */}
+                            </div>
+                            <button 
+                                onClick={() => handleStartMeeting(session.id)} 
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                            >
+                                Start Meeting
+                            </button>
                         </li>
                     ))}
                 </ul>
