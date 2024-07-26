@@ -145,6 +145,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
      'http://localhost:3000',
+     'http://localhost:5000',
 
 ]
 
@@ -152,6 +153,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
        'http://localhost:5174',
           'http://localhost:5175',  # Your frontend URL
+           'http://localhost:5000',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

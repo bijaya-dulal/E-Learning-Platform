@@ -487,3 +487,10 @@ class ScheduledSessionCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        sessions = ScheduledSession.objects.filter(user=user)
+        serializer = ScheduledSessionSerializer(sessions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

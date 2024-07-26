@@ -1,18 +1,54 @@
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-
+// import axios from 'axios';
+// import Cookies from 'js-cookie';
 
 // const Schedule = () => {
 //     const [sessions, setSessions] = useState([]);
 //     const [course, setCourse] = useState('');
 //     const [date, setDate] = useState('');
 //     const [time, setTime] = useState('');
+//     const navigate = useNavigate();
 
-//     const handleScheduleSession = () => {
-//         setSessions([...sessions, { course, date, time }]);
-//         setCourse('');
-//         setDate('');
-//         setTime('');
+//     const handleScheduleSession = async () => {
+//         try {
+//             const csrfToken = Cookies.get('csrftoken');
+//             const sessionId = sessionStorage.getItem('session_id');
+            
+//             if (!sessionId) {
+//                 alert('You need to log in first.');
+//                 navigate('/signin');
+//                 return;
+//             }
+            
+//             const response = await axios.post(
+//                 '/api/schedule/',
+//                 { course, date, time },
+//                 {
+//                     headers: {
+//                         'Authorization': `Session ${sessionId}`,
+//                         'X-CSRFToken': csrfToken,
+//                     },
+//                 }
+//             );
+
+//             if (response.status === 201) {
+//                 // Store course in localStorage
+//                 localStorage.setItem('course', course);
+                
+//                 setSessions([...sessions, response.data]);
+//                 setCourse('');
+//                 setDate('');
+//                 setTime('');
+                
+//                 alert('Session scheduled successfully!');
+//             } else {
+//                 alert('Scheduling session failed.');
+//             }
+//         } catch (error) {
+//             console.error('Error scheduling session:', error);
+//             alert('Scheduling session failed.');
+//         }
 //     };
 
 //     return (
@@ -63,8 +99,7 @@
 
 // export default Schedule;
 
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -76,17 +111,51 @@ const Schedule = () => {
     const [time, setTime] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchSessions = async () => {
+            try {
+                const csrfToken = Cookies.get('csrftoken');
+                const sessionId = sessionStorage.getItem('session_id');
+
+                if (!sessionId) {
+                    alert('You need to log in first.');
+                    navigate('/signin');
+                    return;
+                }
+
+                const response = await axios.get('/api/schedule/', {
+                    headers: {
+                        'Authorization': `Session ${sessionId}`,
+                        'X-CSRFToken': csrfToken,
+                    },
+                    withCredentials: true, // Include this to send cookies with the request
+                });
+
+                if (response.status === 200) {
+                    setSessions(response.data);
+                } else {
+                    alert('Failed to fetch sessions.');
+                }
+            } catch (error) {
+                console.error('Error fetching sessions:', error);
+                alert('Failed to fetch sessions.');
+            }
+        };
+
+        fetchSessions();
+    }, [navigate]);
+
     const handleScheduleSession = async () => {
         try {
             const csrfToken = Cookies.get('csrftoken');
             const sessionId = sessionStorage.getItem('session_id');
-            
+
             if (!sessionId) {
                 alert('You need to log in first.');
                 navigate('/signin');
                 return;
             }
-            
+
             const response = await axios.post(
                 '/api/schedule/',
                 { course, date, time },
@@ -95,18 +164,19 @@ const Schedule = () => {
                         'Authorization': `Session ${sessionId}`,
                         'X-CSRFToken': csrfToken,
                     },
+                    withCredentials: true, // Include this to send cookies with the request
                 }
             );
 
             if (response.status === 201) {
                 // Store course in localStorage
                 localStorage.setItem('course', course);
-                
+
                 setSessions([...sessions, response.data]);
                 setCourse('');
                 setDate('');
                 setTime('');
-                
+
                 alert('Session scheduled successfully!');
             } else {
                 alert('Scheduling session failed.');
