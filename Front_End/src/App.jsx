@@ -17,7 +17,7 @@ import ItemList from './pages/ItemList';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import Schedule from './components/Schedule.jsx';
 
-import VideoCall  from './pages/call.jsx'; 
+import VideoCall  from './pages/Videocall.jsx'; 
 
 
 
@@ -38,7 +38,10 @@ const App = () => {
         console.error('Error fetching user info:', error);
       }
     };
-
+    const handleRefresh = () => {
+      window.location.reload();
+  };
+  
     fetchUserInfo();
   }, []);
   
@@ -62,7 +65,6 @@ const App = () => {
         <Route path="/Dashboard" element={isStaff ? <TeacherDashboard /> : <StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
         <Route path="/Schedule/:tab" element={<Schedule />} />
-        
         <Route path="/call" element={<VideoCall/>} />
       </Routes>
   

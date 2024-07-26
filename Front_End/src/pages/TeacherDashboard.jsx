@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import TeacherProfile from '../components/TeacherProfile';
 import TeacherCourses from '../components/TeacherCourses';
 import Schedule from '../components/Schedule';
-import Footer from '../components/Footer'
-import axios from 'axios'; 
-
-
-
-
+import Footer from '../components/Footer';
+import axios from 'axios';
 
 const TeacherDashboard = () => {
     const [user, setUser] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate(); // Hook for navigation
     const [activeTab, setActiveTab] = useState('profile');
 
     useEffect(() => {
@@ -20,27 +17,40 @@ const TeacherDashboard = () => {
             setActiveTab(location.state.tab);
         }
 
-       
-          const handleLogout = async () => {
+        const fetchUserDetails = async () => {
             try {
-              const sessionId = sessionStorage.getItem('session_id');
-              await api.post('/logout/', {}, {
-                headers: {
-                  'Authorization': `Session ${sessionId}`,
-                },
-              });
-              localStorage.removeItem('session-id');
-              sessionStorage.removeItem('session_id'); // Clear session ID from storage
-              navigate('/signin'); // Redirect to sign-in page
+                const sessionId = sessionStorage.getItem('session_id'); // Retrieve session ID from storage
+                const response = await axios.get('/api/user/', {
+                    headers: {
+                        'Authorization': `Session ${sessionId}`, // Pass session ID in headers or as needed
+                    },
+                });
+                setUser(response.data.user);
+                console.log(response.data);
             } catch (error) {
-              console.error('Error during logout:', error);
+                console.error('Error fetching user details:', error);
             }
-        }
-      
+        };
+        fetchUserDetails();
     }, [location.state?.tab]);
 
+    const handleLogout = async () => {
+        try {
+            const sessionId = sessionStorage.getItem('session_id');
+            await axios.post('/api/logout/', {}, {
+                headers: {
+                    'Authorization': `Session ${sessionId}`,
+                },
+            });
+            localStorage.removeItem('session-id');
+            sessionStorage.removeItem('session_id'); // Clear session ID from storage
+            navigate('/signin'); // Redirect to sign-in page
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
    
-      
 
     const renderContent = () => {
         switch (activeTab) {
@@ -55,9 +65,6 @@ const TeacherDashboard = () => {
         }
     };
 
-
- s
-
     return (
         <div>
             <div className="flex min-h-screen">
@@ -70,7 +77,8 @@ const TeacherDashboard = () => {
                             <li onClick={() => setActiveTab('profile')} className="cursor-pointer p-4 hover:bg-teal-600">Teacher Profile</li>
                             <li onClick={() => setActiveTab('courses')} className="cursor-pointer p-4 hover:bg-teal-600">Courses</li>
                             <li onClick={() => setActiveTab('schedule')} className="cursor-pointer p-4 hover:bg-teal-600">Schedule</li>
-
+                            <li onClick={handleLogout} className="cursor-pointer p-4 hover:bg-teal-600">Logout</li> {/* Logout button */}
+                            
                         </ul>
                     </nav>
                 </aside>
