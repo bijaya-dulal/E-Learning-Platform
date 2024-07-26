@@ -17,6 +17,7 @@ import Schedule from './components/Schedule.jsx';
 import VideoCall from './pages/Videocall.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import  EsewaPayment from './components/EsewaPayment.jsx'
+import Pay_success from './pages/pay_success.jsx';
 
 const App = () => {
   const [isStaff, setIsStaff] = useState(null);
@@ -46,11 +47,10 @@ const App = () => {
         <Route path="/courses" element={<Courses />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-      
         <Route path="/login" element={<Login />} />
-
         <Route path="/signin" element={<SignIn />} />
-      
+        <Route path="/pay_success" element={<Pay_success />} />
+        {/* <Route path="pay_success/?payment=success" element={<Pay_success/>} /> */}
         {/* Protected Routes */}
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={isStaff ? <TeacherDashboard /> : <StudentDashboard />} />

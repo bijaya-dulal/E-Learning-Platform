@@ -296,7 +296,8 @@ class PaymentStatusView(View):
         user_course = UserCourse.objects.filter(course_id=course_id).first()
         has_paid = user_course.has_paid if user_course else False
         return JsonResponse({'has_paid': has_paid})
-
+    
+from .models import Course, UserCourse
 class EsewaVerifyView(View):
     def get(self, request, *args, **kwargs):
         
@@ -316,7 +317,7 @@ class EsewaVerifyView(View):
         status = root[0].text.strip()
 
         order_id = oid.split("_")[1]
-        user_course = Course.objects.get(id=order_id)
+        user_course = UserCourse.objects.get(id=order_id)
 
         if status == "Success":
             print('success')
@@ -402,7 +403,7 @@ def get_video_access_status(request, course_id):
 
 ###for usercourse register_required
 from django.contrib.auth.decorators import login_required
-from .models import Course, UserCourse
+
 def enroll_in_course(request, course_id):
     course = Course.objects.get(id=course_id)
     user = request.user
@@ -436,3 +437,33 @@ def get_user_course_by_title(request):
         return JsonResponse({'has_paid': has_paid})
     else:
         return JsonResponse({'error': 'Invalid parameters'}, status=400)
+    
+
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from .models import UserCourse
+
+@csrf_exempt
+def UpdatePay(request):
+    if request.method == 'POST':
+        try:
+            import json
+            data = json.loads(request.body.decode('utf-8'))
+
+            course_id = data.get('course_id')
+            email = data.get('email')
+
+            if not course_id or not email:
+                return JsonResponse({'error': 'Course ID or email missing'}, status=400)
+
+            # Retrieve the UserCourse object based on course_id and user email
+            user_course = get_object_or_404(UserCourse, course_id=course_id, user__email=email)
+            user_course.has_paid = True
+            user_course.save()
+
+            return JsonResponse({'message': 'Payment status updated successfully'}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

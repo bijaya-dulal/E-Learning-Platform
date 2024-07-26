@@ -50,7 +50,7 @@ urlpatterns = [
 	
 	#for payment check
      path('usercourse/title/', views. get_user_course_by_title, name='usercourse-detail'),
-	
+	path('updatepay/', views.UpdatePay, name='update_payment_status'),
 	
 
 ]

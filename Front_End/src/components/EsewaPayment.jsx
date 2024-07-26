@@ -26,7 +26,8 @@ const EsewaPayment = () => {
             <input type="hidden" name="product_code" value={paymentData.product_code} />
             <input type="hidden" name="product_service_charge" value={paymentData.product_service_charge} />
             <input type="hidden" name="product_delivery_charge" value={paymentData.product_delivery_charge} />
-            <input type="hidden" name="success_url" value={`${window.location.origin}/course/${courseId}/?payment=success`} />
+            {/* <input type="hidden" name="success_url" value={`${window.location.origin}/course/${courseId}/?payment=success`} /> */}
+            <input type="hidden" name="success_url" value={`${window.location.origin}/pay_success/?payment=success`} />
             <input type="hidden" name="failure_url" value={`${window.location.origin}/course/${courseId}/?payment=failure`} />
             <input type="hidden" name="signed_field_names" value={paymentData.signed_field_names} />
             <input type="hidden" name="signature" value={paymentData.signature} />

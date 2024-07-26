@@ -37,6 +37,7 @@ const Courses = () => {
         console.log(response.data);
         if (Array.isArray(response.data)) {
           setCourses(response.data);
+         
         } else {
           console.error('Unexpected response data format:', response.data);
           setError('Unexpected data format');
@@ -50,6 +51,7 @@ const Courses = () => {
     };
 
     fetchCourses();
+    window.cors=courses.title;
   }, []);
 
   const handleCategoryClick = (id) => {
@@ -79,7 +81,14 @@ const Courses = () => {
       );
 
       if (response.status === 200) {
+        localStorage.setItem('course',id)
+      
         alert('Enrollment successful!');
+        
+        // Store course and user in localStorage
+    
+   
+
         navigate(`/course/${id}`);
       } else {
         alert('Enrollment failed.');

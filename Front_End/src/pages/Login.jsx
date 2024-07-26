@@ -16,6 +16,7 @@ const onSubmit = async (data, role) => {
         
         username: data.email,
         password: data.password
+        
       });  
       // Store the token in local storage or a context
       localStorage.setItem('session_id', response.data.session_id);
