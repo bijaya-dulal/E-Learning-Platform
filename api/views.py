@@ -17,7 +17,7 @@ from django.utils import timezone
 from rest_framework import status
 from .models import OTPCode
 from .serializers import OTPCodeSerializer
-
+#esewa ko lagi 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.http import JsonResponse
@@ -162,19 +162,7 @@ class CheckEmail(APIView):
         if User.objects.filter(email=email).exists():
             return Response({"exists": True}, status=status.HTTP_200_OK)
         return Response({"exists": False}, status=status.HTTP_200_OK)
-
-
-
-<<<<<<< Updated upstream
-=======
-
-
-	    
-
-
-
-
-
+    
 
 
 # views.py
@@ -364,4 +352,4 @@ def get_video_access_status(request, course_id):
     ]
 
     return JsonResponse({"lessons": video_list, "has_paid": has_paid})
->>>>>>> Stashed changes
+

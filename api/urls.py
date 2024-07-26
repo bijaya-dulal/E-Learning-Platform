@@ -5,9 +5,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.urls import path
 from .views import CheckEmail, GenerateOTP, VerifyOTP
 
-<<<<<<< Updated upstream
-urlpatterns = [
-=======
+
 from .views import CourseViewSet, EnrollmentViewSet
 
 from rest_framework.routers import DefaultRouter
@@ -35,8 +33,8 @@ router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
 
 urlpatterns = [
        path('', include(router.urls)),
-    path('', include(router.urls)),
->>>>>>> Stashed changes
+  
+
     path('items/',views.ItemListCreateView.as_view(), name='item-list-create'),
   	path('register/', views.UserRegister.as_view(), name='register'),
 	path('login/', views.UserLogin.as_view(), name='login'),
@@ -45,9 +43,7 @@ urlpatterns = [
 	path('check-email/', CheckEmail.as_view(), name='check-email'),
 	path('generate-otp/', GenerateOTP.as_view(), name='generate_otp'),
     path('verify-otp/', VerifyOTP.as_view(), name='verify_otp'),
-<<<<<<< Updated upstream
-]
-=======
+
 	path('esewa-payment/', esewa_payment, name='esewa_payment'),
 	#path('success/', success_view, name='success'),
     #path('failure/', failure_view, name='failure'),
@@ -60,7 +56,5 @@ urlpatterns = [
 	
 
 ]
->>>>>>> Stashed changes
 
 
-]
