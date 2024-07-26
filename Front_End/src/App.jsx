@@ -10,7 +10,7 @@ import Contact from './pages/Contact.jsx';
 import SignIn from './pages/SignIn.jsx';
 import Login from './pages/Login.jsx';
 import CourseDetail from './components/CourseDetail';
-import Payment from './components/Payment';
+import EsewaPayment from './components/EsewaPayment';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import OtpConfirmation from './pages/OtpConfirmation.jsx';
 import ItemList from './pages/ItemList';
@@ -56,7 +56,7 @@ const App = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/login" element={<Login />} />
         <Route path="/course/:id" element={<CourseDetail />} />
-        <Route path="/payment/:id" element={<Payment />} />
+        <Route path="/esewapayment/:id" element={<EsewaPayment />} />
         <Route path="/Dashboard" element={isStaff ? <TeacherDashboard /> : <StudentDashboard />} />
         <Route path="/otp-confirmation" element={<OtpConfirmation />} />
         <Route path="/Schedule/:tab" element={<Schedule />} />

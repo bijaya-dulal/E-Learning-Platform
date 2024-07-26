@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Footer from './Footer';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Footer from './Footer';
+import api from '../api/axios'; // Import your API utility
+import EsewaPayment from './EsewaPayment';
 
 const CourseDetail = () => {
   const mediaUrl = 'http://localhost:8000'; // Ensure this is the correct base URL for media files
   const { id } = useParams();
+  const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [hasPaid, setHasPaid] = useState(false);
@@ -13,47 +16,83 @@ const CourseDetail = () => {
   const [newReview, setNewReview] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [videoError, setVideoError] = useState(false);
+  const [user, setUser] = useState(null); // State to store user details
+  const [isPaymentChecked, setIsPaymentChecked] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/courses/${id}/`)
-      .then(response => {
+    const fetchCourse = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/courses/${id}/`);
         setCourse(response.data);
-        console.log(response.data);
         if (response.data.curriculum.length > 0 && response.data.curriculum[0].lessons.length > 0) {
           setSelectedLesson(response.data.curriculum[0].lessons[0]);
-          console.log(response.data.curriculum[0].lessons[0]);
         }
-      })
-      .catch(error => {
+      } catch (error) {
         console.error("There was an error fetching the course data!", error);
-      });
-  }, [id]);
+      }
+    };
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+    const fetchUserDetails = async () => {
+      try {
+        const sessionId = sessionStorage.getItem('session_id');
+        if (sessionId) {
+          const response = await api.get('/user/', {
+            headers: {
+              'Authorization': `Session ${sessionId}`, // Pass session ID in headers
+            },
+          });
+          setUser(response.data.user);
+        } else {
+          navigate('/signin'); // Redirect to login if no session ID
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        navigate('/signin'); // Redirect on error
+      }
+    };
+
+    fetchCourse();
+    fetchUserDetails();
+  }, [id, navigate]);
+
+  const checkPaymentStatus = async () => {
+    try {
+      const sessionId = sessionStorage.getItem('session_id');
+      if (sessionId) {
+        const response = await axios.get(`http://localhost:8000/api/check-payment-status/${id}/`, {
+          headers: {
+            'Authorization': `Session ${sessionId}`, // Pass session ID in headers
+          },
+        });
+        setHasPaid(response.data.has_paid);
+        setIsPaymentChecked(true);
+      } else {
+        navigate('/signin'); // Redirect to login if no session ID
+      }
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      navigate('/signin'); // Redirect on error
+    }
   };
 
   const handleLessonClick = (lesson) => {
-    if (lesson.free || hasPaid) {
+    if (lesson.free) {
       setSelectedLesson(lesson);
-      console.log("Video Link:", lesson.video_link);
-      setVideoError(false); // Reset video error on lesson change
+      setVideoError(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      checkPaymentStatus(lesson);
     }
   };
 
-  const handlePaymentClick = () => {
-    setHasPaid(true);
-  };
-
-  const handleReviewSubmit = (e) => {
-    e.preventDefault();
-    if (course) {
-      course.reviews.push({ user:user, comment: newReview, rating: newRating });
-      setNewReview('');
-      setNewRating(5);
+  useEffect(() => {
+    if (selectedLesson && isPaymentChecked) {
+      if (!selectedLesson.free && !hasPaid) {
+        // Ensure the lesson is locked if payment has not been made
+        setSelectedLesson(null);
+      }
     }
-  };
+  }, [selectedLesson, hasPaid, isPaymentChecked]);
 
   const handleVideoError = () => {
     setVideoError(true);
@@ -66,29 +105,23 @@ const CourseDetail = () => {
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
-        {course.title ? (
-          <h1>{course.title}</h1>
-        ) : (
-          <p>Loading...</p>
-        )}
+        <h1>{course.title || 'Loading...'}</h1>
 
         <div className="mb-4">
           {videoError ? (
             <div className="text-center text-red-500">Content Unavailable</div>
           ) : (
-            <video
-              controls
-              src={`${mediaUrl}${selectedLesson?.video_link}`}  // Use video_link directly
-              // src={`${mediaUrl}/videos/demo.mp4`} //static 
-              className="w-full"
-              onError={handleVideoError}
-            >
-              Your browser does not support the video tag.
-            </video>
+            selectedLesson && (
+              <video
+                controls
+                src={`${mediaUrl}${selectedLesson.video_link}`}  // Use video_link directly
+                className="w-full"
+                onError={handleVideoError}
+              >
+                Your browser does not support the video tag.
+              </video>
+            )
           )}
-          <div className="mt-4">
-          
-          </div>
           <div className="mt-4">
             <a href={selectedLesson?.notes_link} className="text-teal-500 hover:underline" target="_blank" rel="noopener noreferrer">Download Notes</a>
           </div>
@@ -96,10 +129,10 @@ const CourseDetail = () => {
 
         <nav className="mb-4 border-b">
           <ul className="flex space-x-4">
-            <li className={`cursor-pointer pb-2 ${activeTab === 'overview' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => handleTabChange('overview')}>Overview</li>
-            <li className={`cursor-pointer pb-2 ${activeTab === 'lessons' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => handleTabChange('lessons')}>Lessons</li>
-            <li className={`cursor-pointer pb-2 ${activeTab === 'tutor' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => handleTabChange('tutor')}>Tutor</li>
-            <li className={`cursor-pointer pb-2 ${activeTab === 'rating' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => handleTabChange('rating')}>Rating</li>
+            <li className={`cursor-pointer pb-2 ${activeTab === 'overview' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => setActiveTab('overview')}>Overview</li>
+            <li className={`cursor-pointer pb-2 ${activeTab === 'lessons' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => setActiveTab('lessons')}>Lessons</li>
+            <li className={`cursor-pointer pb-2 ${activeTab === 'tutor' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => setActiveTab('tutor')}>Tutor</li>
+            <li className={`cursor-pointer pb-2 ${activeTab === 'rating' ? 'border-b-2 border-teal-500' : ''}`} onClick={() => setActiveTab('rating')}>Rating</li>
           </ul>
         </nav>
 
@@ -136,7 +169,7 @@ const CourseDetail = () => {
                 </div>
               ))}
               {!hasPaid && (
-                <button onClick={handlePaymentClick} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">Unlock All Videos</button>
+                <EsewaPayment />
               )}
             </div>
           )}

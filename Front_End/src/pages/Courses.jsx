@@ -1,11 +1,9 @@
-
-
-// export default Courses;
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../components/Footer.jsx';
+import api from '../api/axios'; // Import your API utility
 
 const categories = [
   { id: 1, name: 'UI/UX Design Courses', courses: 25, icon: <FaPencilRuler className="text-4xl text-teal-500" /> },
@@ -21,12 +19,12 @@ const categories = [
   { id: 11, name: 'Web Management', courses: 17, icon: <FaProjectDiagram className="text-4xl text-teal-500"/> },
 ];
 
-
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
   const coursesRef = useRef(null);
   const navigate = useNavigate();
 
@@ -34,7 +32,6 @@ const Courses = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('/api/courses/');
-        console.log(response.data);
         if (Array.isArray(response.data)) {
           setCourses(response.data);
         } else {
@@ -49,7 +46,24 @@ const Courses = () => {
       }
     };
 
+    const fetchUserDetails = async () => {
+      try {
+        const sessionId = sessionStorage.getItem('session_id');
+        if (sessionId) {
+          const response = await api.get('/user/', {
+            headers: {
+              'Authorization': `Session ${sessionId}`,
+            },
+          });
+          setUser(response.data.user);
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
     fetchCourses();
+    fetchUserDetails();
   }, []);
 
   const handleCategoryClick = (id) => {
@@ -58,7 +72,11 @@ const Courses = () => {
   };
 
   const handleEnrollClick = (id) => {
-    navigate(`/course/${id}`);
+    if (!user) {
+      navigate('/signin'); // Redirect to sign-in page if user is not logged in
+    } else {
+      navigate(`/course/${id}`);
+    }
   };
 
   const filteredCourses = selectedCategory 
@@ -110,7 +128,12 @@ const Courses = () => {
                   <p className="text-gray-500 mb-4">by {course.teacher.name}</p>
                   <p className="text-gray-500 mb-4"> {course.curriculum.reduce((total, section) => total + section.lesson_count, 0)}lectures ({course.duration})</p>
                   <p className="text-teal-500 mb-4">${course.price} All Course /  per month</p>
-                  <Link to={`/course/${course.id}`} className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600">ENROLL NOW!</Link>
+                  <button 
+                    onClick={() => handleEnrollClick(course.id)}
+                    className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
+                  >
+                    ENROLL NOW!
+                  </button>
                 </div>
               ))
             ) : (

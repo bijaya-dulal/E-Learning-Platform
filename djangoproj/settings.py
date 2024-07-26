@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
      'corsheaders',
      'Front_End',
+    "admin_interface",
+    "colorfield",
      
      
      

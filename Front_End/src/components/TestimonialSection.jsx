@@ -1,8 +1,8 @@
 import React from 'react';
 
-const TestimonialCard = ({ name, title, quote }) => (
+const TestimonialCard = ({ name, title, quote,photo }) => (
   <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
-    <img className="w-24 h-24 mb-4 rounded-full" src="/path-to-image.jpg" alt={name} />
+    <img className="w-24 h-24 mb-4 rounded-full" src={photo} alt={name} />
     <h2 className="mb-2 text-xl font-bold">{name}</h2>
     <h3 className="mb-4 text-base text-gray-500">{title}</h3>
     <p className="text-base text-center text-gray-600">{quote}</p>
@@ -11,9 +11,9 @@ const TestimonialCard = ({ name, title, quote }) => (
 
 const TestimonialSection = () => {
   const testimonials = [
-    { name: 'Jessica Park', title: 'Web Development Student', quote: 'Thanks to this platform, I learned web development skills that helped me land my dream job!' },
-    { name: 'Michael Johnson', title: 'Digital Marketing Enthusiast', quote: "I've been able to enhance my digital marketing skills and apply them to real-world projects, all thanks to the comprehensive courses offered here." },
-    { name: 'Sarah Lee', title: 'Graphic Design Learner', quote: 'The instructors here are amazing! They provide clear explanations and valuable insights, making learning graphic design both fun and rewarding.' },
+    { name: 'Asim Paudel', title: 'Web Development Student', quote: 'Thanks to this platform, I learned web development skills that helped me land my dream job!', photo:'/src/assets/asim.jpg'},
+    { name: 'Bikram Khatri', title: 'Digital Marketing Enthusiast', quote: "I've been able to enhance my digital marketing skills and apply them to real-world projects, all thanks to the comprehensive courses offered here.", photo:'/src/assets/bikram.jpg'},
+    { name: 'Bijay Dulal', title: 'Graphic Design Learner', quote: 'The instructors here are amazing! They provide clear explanations and valuable insights, making learning graphic design both fun and rewarding.', photo:'/src/assets/bijay.jpg'},
     // Add more testimonials as needed
   ];
 
