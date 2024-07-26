@@ -30,9 +30,9 @@ const CourseDetail = () => {
       });
   }, [id]);
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
 
   const handleLessonClick = (lesson) => {
     if (lesson.free || hasPaid) {
