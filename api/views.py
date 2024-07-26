@@ -361,5 +361,18 @@ def get_course_details(request, course_id):
     except Course.DoesNotExist:
         return JsonResponse({'error': 'Course not found'}, status=404)
 
+""" def proxy_to_flask(request):
+    title = request.GET.get('title')
+    if not title:
+        return JsonResponse({'error': 'Missing "title" parameter'}, status=400)
+
+    flask_url = 'http://localhost:5000/recommend'
+    response = requests.get(flask_url, params={'title': title})
+    
+    if response.status_code == 404:
+        return JsonResponse({'error': 'Course title not found.'}, status=404)
+    
+    return JsonResponse(response.json()) """
+
 
 

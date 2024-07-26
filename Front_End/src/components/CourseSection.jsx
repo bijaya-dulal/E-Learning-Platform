@@ -57,7 +57,7 @@ const CourseSection = () => {
         <div className="flex overflow-hidden w-full">
           <div className="flex w-full">
             {currentCourses.map((course) => (
-              <div key={course.id} className="bg-white shadow-md rounded p-4 m-4 flex-none w-1/4">
+              <div key={course.id} className="bg-white shadow-md rounded p-4 m-4 flex-none w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                 <div className="flex items-center justify-center h-40 bg-teal-100 rounded mb-4">
                   <svg className="h-12 w-12 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />

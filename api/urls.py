@@ -12,6 +12,7 @@ from .views import esewa_payment
 from .views import PaymentStatusView, EsewaVerifyView
 from .views import check_payment_status
 from .views import get_course_details
+""" from .views import proxy_to_flask """
 
 router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
@@ -35,5 +36,6 @@ urlpatterns = [
 	path('esewa-verify/', EsewaVerifyView.as_view(), name='esewa_verify'),
 	path('api/check-payment-status/<int:course_id>/', views.check_payment_status, name='check_payment_status'),
 	path('api/courses/<int:course_id>/', get_course_details, name='get_course_details'),
+	# path('recommend/', proxy_to_flask, name='proxy_to_flask'), """
 	
 ]

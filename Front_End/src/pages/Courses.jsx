@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../components/Footer.jsx';
 import api from '../api/axios'; // Import your API utility
+import Recommendation from '../components/Recommendation.jsx';
 
 const categories = [
   { id: 1, name: 'UI/UX Design Courses', courses: 25, icon: <FaPencilRuler className="text-4xl text-teal-500" /> },
@@ -142,6 +143,7 @@ const Courses = () => {
           </div>
         )}
       </div>
+      <Recommendation/>
       <Footer />
     </div>
   );
