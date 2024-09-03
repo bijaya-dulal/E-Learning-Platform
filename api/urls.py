@@ -30,7 +30,7 @@ from .views import TeacherDetailView
 urlpatterns = [
        path('', include(router.urls)),
   
-        path('teacher/', TeacherDetailView.as_view(), name='teacher-detail'),
+    path('teacher/', TeacherDetailView.as_view(), name='teacher-detail'),
     path('items/',views.ItemListCreateView.as_view(), name='item-list-create'),
   	path('register/', views.UserRegister.as_view(), name='register'),
 	path('login/', views.UserLogin.as_view(), name='login'),
@@ -39,7 +39,7 @@ urlpatterns = [
 	path('check-email/', CheckEmail.as_view(), name='check-email'),
 	path('generate-otp/', GenerateOTP.as_view(), name='generate_otp'),
     path('verify-otp/', VerifyOTP.as_view(), name='verify_otp'),
-        path('enroll/<int:course_id>/', enroll_in_course, name='enroll_in_course'),
+    path('enroll/<int:course_id>/', enroll_in_course, name='enroll_in_course'),
 	path('esewa-payment/', esewa_payment, name='esewa_payment'),
 	#path('success/', success_view, name='success'),
     #path('failure/', failure_view, name='failure'),
@@ -49,7 +49,7 @@ urlpatterns = [
 	path('video-access-status/<int:course_id>/', get_video_access_status, name='get_video_access_status'),
 	
 	#for payment check
-     path('usercourse/title/', views. get_user_course_by_title, name='usercourse-detail'),
+    path('usercourse/title/', views. get_user_course_by_title, name='usercourse-detail'),
 	path('updatepay/', views.UpdatePay, name='update_payment_status'),
 	#for meeting schedule
 	path('schedule/', ScheduledSessionCreateView.as_view(), name='schedule_session'),
