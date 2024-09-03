@@ -53,7 +53,7 @@ urlpatterns = [
 	path('updatepay/', views.UpdatePay, name='update_payment_status'),
 	#for meeting schedule
 	path('schedule/', ScheduledSessionCreateView.as_view(), name='schedule_session'),
-     path('students/', StudentListView.as_view(), name='students-list'),
+    #  path('students/', StudentListView.as_view(), name='students-list'),
 
 
 ]
