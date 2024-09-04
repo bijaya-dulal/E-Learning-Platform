@@ -4,4 +4,7 @@ __pycache__/
 node_modules/
 media/
 db.sqlite3/
+db.sqlite3
+api/__pycache__/
+djangoproj/__pycache__/
 

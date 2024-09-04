@@ -6,7 +6,7 @@ const LandingsSection = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate('/signin');
+    navigate('/courses');
   };
 
   const handleViewCourses = () => {
