@@ -506,3 +506,25 @@ class StudentListView(APIView):
         students = User.objects.filter(is_staff=False)  # Get all non-staff users
         serializer = UserSerializer(students, many=True)
         return Response(serializer.data)
+    
+#for mail room ID    
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def send_room_id_email(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        room_id = data.get('roomID')
+        if email and room_id:
+            # Construct the email content
+            subject = 'Video Call Room ID'
+            message = f'You are invited to a video call. Room ID: {room_id}'
+            send_mail(subject, message, 'your-email@example.com', [email])
+            return JsonResponse({'message': 'Email sent successfully'})
+        else:
+            return JsonResponse({'error': 'Missing email or roomID'}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

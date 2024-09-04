@@ -22,7 +22,7 @@ router = DefaultRouter()
 router.register(r'courses', CourseViewSet, basename='course')
 router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
 
-
+from .views import send_room_id_email
 from .views import CourseViewSet, EnrollmentViewSet
 
 from rest_framework.routers import DefaultRouter
@@ -54,6 +54,7 @@ urlpatterns = [
 	#for meeting schedule
 	path('schedule/', ScheduledSessionCreateView.as_view(), name='schedule_session'),
     path('students/', StudentListView.as_view(), name='students-list'),
-
+    #room id sender
+     path('send-room-id-email/', send_room_id_email, name='send-room-id-email'),
 
 ]
