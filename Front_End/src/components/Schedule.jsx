@@ -72,7 +72,10 @@ const Schedule = () => {
         }
     };
 
-    const handleStartMeeting = (sessionId) => {
+    const handleStartMeeting = (session) => {
+        // Save the student's information to localStorage
+        localStorage.setItem('selectedStudent', JSON.stringify(session.student));
+
         // Navigate to VideoCall component
         navigate(`/videocall`);
     };
@@ -131,10 +134,10 @@ const Schedule = () => {
                             <div>
                                 <h4 className="font-bold">{session.course}</h4>
                                 <p>{session.date} at {session.time}</p>
-                                <p>Student: {session.student.username}</p> {/* Display student username */}
+                                <p>Student: {session.student}</p> {/* Display student username */}
                             </div>
                             <button 
-                                onClick={() => handleStartMeeting(session.id)} 
+                                onClick={() => handleStartMeeting(session)} 
                                 className="bg-blue-500 text-white px-4 py-2 rounded"
                             >
                                 Start Meeting
