@@ -1,8 +1,7 @@
-*.pyc
 __pycache__/
-*.pyc
+*.pyc/
 __pycache__/
 node_modules/
-media
 media/
-node_modules
+db.sqlite3/
+
