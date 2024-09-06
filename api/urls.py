@@ -13,7 +13,7 @@ from .views import esewa_payment ,enroll_in_course,get_video_access_status
 #from .views import success_view, failure_view
 from .views import PaymentStatusView, EsewaVerifyView
 from .views import update_payment_status,get_payment_status
-from .views import ScheduledSessionCreateView,StudentListView
+from .views import ScheduledSessionCreateView,StudentListView, EnrolledCoursesView
 
 
 
@@ -56,5 +56,8 @@ urlpatterns = [
     path('students/', StudentListView.as_view(), name='students-list'),
     #room id sender
      path('send-room-id-email/', send_room_id_email, name='send-room-id-email'),
+     #fetched enrolled course
+       path('enrolled_course/', EnrolledCoursesView.as_view(), name='enrolled_courses'),
+     
 
 ]

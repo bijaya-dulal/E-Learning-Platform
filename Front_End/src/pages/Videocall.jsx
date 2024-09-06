@@ -83,8 +83,8 @@ const VideoCall = () => {
     const roomID = roomIDFromParams || getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
     const userID = Math.floor(Math.random() * 10000) + "";
     const userName = "userName" + userID;
-    const appID = 1983781798;
-    const serverSecret = "5afeb59a76f86324138749997e959627";
+    const appID = 1256485370;
+    const serverSecret = "6b58ad815b2b01a8b202d8d72b53422a";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);

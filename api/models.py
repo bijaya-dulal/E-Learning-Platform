@@ -11,13 +11,6 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
-4
-
-
-
-
-
-
 # ## updated model
 #for video courses
 

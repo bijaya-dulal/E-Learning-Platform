@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, TeacherSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, TeacherSerializer,OTPCodeSerializer
 from rest_framework import permissions, status
 from django.contrib.auth import authenticate, login
 #OTP ko lagi
@@ -16,7 +16,6 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from rest_framework import status
-from .serializers import OTPCodeSerializer
 #esewa ko lagi 
 #from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
@@ -522,9 +521,22 @@ def send_room_id_email(request):
         if email and room_id:
             # Construct the email content
             subject = 'Video Call Room ID'
-            message = f'You are invited to a video call. Room ID: {room_id}'
+            message = f'You are invited to a video call. Room link: http://localhost:5173/videocall?roomID={room_id}'
             send_mail(subject, message, 'your-email@example.com', [email])
             return JsonResponse({'message': 'Email sent successfully'})
         else:
             return JsonResponse({'error': 'Missing email or roomID'}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+#frtch enrolled course
+
+
+class EnrolledCoursesView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    def get(self, request):
+        # Assuming you have an Enrollment model that links users to courses
+        enrollments = UserCourse.objects.filter(user=request.user)
+        serializer = UserCourseSerializer(UserCourse, many=True)
+        return Response({'courses': serializer.data})
