@@ -1,13 +1,14 @@
 
 
-//updated for usercourse adjustment
+
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPaintBrush, FaCode, FaBook, FaLaptopCode, FaDumbbell, FaBullhorn, FaPencilRuler, FaBriefcase, FaProjectDiagram } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import Footer from '../components/Footer.jsx';
-
+import api from '../api/axios'; // Import your API utility
+import Recommendation from '../components/Recommendation.jsx';
+ 
 const categories = [
   { id: 1, name: 'UI/UX Design Courses', courses: 25, icon: <FaPencilRuler className="text-4xl text-teal-500" /> },
   { id: 2, name: 'Art & Design', courses: 25, icon: <FaPaintBrush className="text-4xl text-teal-500"/> },
@@ -21,23 +22,22 @@ const categories = [
   { id: 10, name: 'Business Administration', courses: 17, icon: <FaBriefcase className="text-4xl text-teal-500"/> },
   { id: 11, name: 'Web Management', courses: 17, icon: <FaProjectDiagram className="text-4xl text-teal-500"/> },
 ];
-
+ 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
   const coursesRef = useRef(null);
   const navigate = useNavigate();
-
+ 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('/api/courses/');
-        console.log(response.data);
         if (Array.isArray(response.data)) {
           setCourses(response.data);
-         
         } else {
           console.error('Unexpected response data format:', response.data);
           setError('Unexpected data format');
@@ -49,61 +49,44 @@ const Courses = () => {
         setLoading(false);
       }
     };
-
+ 
+    const fetchUserDetails = async () => {
+      try {
+        const sessionId = sessionStorage.getItem('session_id');
+        if (sessionId) {
+          const response = await api.get('/user/', {
+            headers: {
+              'Authorization': `Session ${sessionId}`,
+            },
+          });
+          setUser(response.data.user);
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+ 
     fetchCourses();
-    window.cors=courses.title;
+    fetchUserDetails();
   }, []);
-
+ 
   const handleCategoryClick = (id) => {
     setSelectedCategory(id);
     coursesRef.current.scrollIntoView({ behavior: 'smooth' });
   };
-
-  const handleEnrollClick = async (id) => {
-    try {
-      const sessionId = sessionStorage.getItem('session_id');
-      if (!sessionId) {
-        navigate('/signin');
-        return;
-      }
-
-      const csrfToken = Cookies.get('csrftoken');
-      
-      const response = await axios.post(
-        `/api/enroll/${id}/`,
-        {},
-        {
-          headers: {
-            'Authorization': `Session ${sessionId}`,
-            'X-CSRFToken': csrfToken,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        localStorage.setItem('course',id)
-      
-        alert('Enrollment successful!');
-        
-        // Store course and user in localStorage
-    
-   
-
-        navigate(`/course/${id}`);
-      } else {
-        alert('Enrollment failed.');
-      }
-    } catch (error) {
-      console.error('Error enrolling in course:', error);
-      alert('Enrollment failed.');
+ 
+  const handleEnrollClick = (id) => {
+    if (!user) {
+      navigate('/signin'); // Redirect to sign-in page if user is not logged in
+    } else {
+      navigate(`/course/${id}`);
     }
-
   };
-
+ 
   const filteredCourses = selectedCategory 
     ? courses.filter(course => course.category === selectedCategory) 
     : courses;
-
+ 
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
@@ -145,11 +128,11 @@ const Courses = () => {
                       <span className="text-gray-500">({course.rating})</span>
                     </div>
                   </div>
-                  <p className="text-gray-500 mb-4">{course.category}</p>
+                  <p className="text-gray-500 mb-4"> {course.category}</p>
                   <p className="text-gray-500 mb-4">by {course.teacher.name}</p>
-                  <p className="text-gray-500 mb-4">{course.curriculum.reduce((total, section) => total + section.lesson_count, 0)} lectures ({course.duration})</p>
-                  <p className="text-teal-500 mb-4">${course.price} All Course / per month</p>
-                  <button
+                  <p className="text-gray-500 mb-4"> {course.curriculum.reduce((total, section) => total + section.lesson_count, 0)}lectures ({course.duration})</p>
+                  <p className="text-teal-500 mb-4">${course.price} All Course /  per month</p>
+                  <button 
                     onClick={() => handleEnrollClick(course.id)}
                     className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
                   >
@@ -163,9 +146,10 @@ const Courses = () => {
           </div>
         )}
       </div>
+      <Recommendation/>
       <Footer />
     </div>
   );
 };
-
+ 
 export default Courses;
