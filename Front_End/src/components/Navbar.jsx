@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import userImage from '../assets/user.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,17 +38,14 @@ const Navbar = () => {
           <Link to="/courses" className="block md:inline-block mt-4 md:mt-0 px-4 py-2">Courses</Link>
           <Link to="/about" className="block md:inline-block mt-4 md:mt-0 px-4 py-2">About</Link>
           <Link to="/contact" className="block md:inline-block mt-4 md:mt-0 px-4 py-2">Contact</Link>
-          <div className="md:hidden flex items-center mt-4">
-            <Link to="/Dashboard">
-              <img src="/path-to-your-image.jpg" alt="User" className="w-8 h-8 rounded-full" />
-            </Link>
-            <Link to="/Dashboard" className="block md:inline-block px-4 py-2">StudentDashboard</Link>
-          </div>
+      
           
         </div>
         <div className="hidden md:flex items-center space-x-4">
           <Link to="/Dashboard">
-            <img src="/path-to-your-image.jpg" alt="User" className="w-8 h-8 rounded-full" />
+          
+            <img src={userImage} alt="User" className="w-8 h-8 rounded-full" />
+            
           </Link>
           <Link to="/signin" className="block md:inline-block mt-4 md:mt-0 px-4 py-2">Sign In</Link>
         </div>
